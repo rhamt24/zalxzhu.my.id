@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <title>ZalxZhu - Project Hub</title>
+  <title>ZalxZhu - Development Hub</title>
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/rhamt24/zalxzhu.github.io/images/f1e63c4922f7d0b0fc4cf9f7b30cef45.jpg" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,14 +18,12 @@
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     
-    /* Mengunci halaman agar tidak bisa di-scroll secara keseluruhan */
     body, html {
       margin: 0; padding: 0;
       font-family: 'Poppins', sans-serif;
       color: #fff; background-color: #000;
-      overflow: hidden; 
-      height: 100%;
-      width: 100%;
+      overflow: hidden; /* Mengunci halaman utama agar tidak goyang */
+      height: 100%; width: 100%;
     }
 
     .background-video {
@@ -40,12 +38,11 @@
 
     .container {
       max-width: 480px; margin: auto;
-      padding: 40px 20px 0;
-      display: none;
-      height: 100vh;
-      overflow: hidden; /* Kontainer utama tetap diam */
+      padding: 30px 20px 0;
+      display: none; height: 100vh;
+      flex-direction: column;
     }
-    .container.active { display: flex; flex-direction: column; animation: slideUp 0.6s ease; }
+    .container.active { display: flex; animation: slideUp 0.6s ease; }
 
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -60,6 +57,7 @@
       border-radius: 30px;
       display: flex; justify-content: space-around;
       padding: 12px; z-index: 2000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .nav-item {
       color: #666; font-size: 20px; cursor: pointer; transition: 0.3s;
@@ -68,58 +66,64 @@
     .nav-item.active { color: var(--pink-sakura); transform: translateY(-5px); text-shadow: 0 0 8px var(--pink-glow); }
     .nav-item span { font-size: 10px; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
 
-    /* Profile & Cards */
-    .profile-header { text-align: center; margin-bottom: 25px; }
+    /* Profile Section */
+    .profile-header { text-align: center; margin-bottom: 20px; flex-shrink: 0; }
     .profile-pic {
-      width: 100px; height: 100px; border-radius: 50%;
+      width: 95px; height: 95px; border-radius: 50%;
       border: 3px solid var(--pink-sakura); margin-bottom: 10px;
       box-shadow: 0 0 15px var(--pink-glow);
     }
-    h1 { font-size: 22px; margin: 0; }
-    .username-link { color: #bbb; text-decoration: none; font-size: 14px; }
+    h1 { font-size: 22px; margin: 0; letter-spacing: 1px; }
+    .status-text { font-size: 13px; color: var(--pink-sakura); margin-top: 5px; font-weight: 600; }
+    .username-link { color: #bbb; text-decoration: none; font-size: 13px; display: block; margin-top: 2px; transition: 0.3s; }
+    .username-link:hover { color: var(--pink-sakura); }
 
+    /* Area Scroll Mandiri */
+    .scroll-area {
+      overflow-y: auto;
+      flex-grow: 1;
+      padding-bottom: 120px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Cards */
     .card {
       background: var(--glass); backdrop-filter: blur(15px);
       border: 1px solid var(--glass-border);
       border-radius: 20px; padding: 18px; margin-bottom: 15px;
     }
-
     .link-item { text-decoration: none; color: white; display: flex; align-items: center; justify-content: space-between; }
     .wa-color { color: var(--wa-green) !important; font-weight: 600; }
     .pink-color { color: var(--pink-sakura) !important; }
 
-    /* Bot Section Scrollable */
-    #bot.active { overflow-y: auto; padding-bottom: 120px; }
-    .bot-thumb { width: 100%; height: 180px; border-radius: 12px; object-fit: cover; margin-bottom: 10px; }
+    /* Bot Card Styling */
+    .bot-thumb { width: 100%; height: 180px; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
     .retired-label {
       background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757;
-      padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-bottom: 5px; display: inline-block;
+      padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-bottom: 8px; display: inline-block;
     }
     .btn-main {
       width: 100%; background: var(--pink-sakura); border: none; padding: 12px;
-      border-radius: 12px; color: #111; font-weight: bold; cursor: pointer;
+      border-radius: 12px; color: #111; font-weight: bold; cursor: pointer; transition: 0.3s;
     }
 
-    /* Giscus Frame Fix: Bagian ini yang bisa di-scroll */
+    /* Giscus Discussion Column Fix */
     .giscus-frame {
       background: rgba(255, 255, 255, 0.03);
       border-radius: 20px;
-      padding: 10px;
-      flex-grow: 1; /* Mengambil sisa ruang layar */
-      overflow-y: auto; /* Hanya bagian ini yang bisa di-scroll */
-      -webkit-overflow-scrolling: touch;
-      margin-bottom: 110px; /* Jarak aman agar tidak tertutup navigasi */
+      padding: 15px;
       border: 1px solid var(--glass-border);
+      min-height: 400px;
     }
+    .safe-spacer { height: 150px; width: 100%; }
 
     #qris-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.92); z-index: 3000; align-items: center; justify-content: center;
       flex-direction: column;
     }
-    .qris-box { background: white; padding: 15px; border-radius: 20px; text-align: center; width: 280px; }
-    .qris-box img { width: 100%; border-radius: 10px; }
-    .close-qris { margin-top: 20px; color: #111; background: var(--pink-sakura); padding: 10px 25px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+    .qris-box { background: white; padding: 15px; border-radius: 25px; text-align: center; width: 300px; box-shadow: 0 0 30px var(--pink-glow); }
+    .qris-box img { width: 100%; border-radius: 15px; display: block; }
   </style>
 </head>
 <body>
@@ -129,62 +133,97 @@
   </video>
   <div class="overlay"></div>
 
-  <div id="home" class="container active" style="overflow-y: auto; padding-bottom: 100px;">
+  <div id="home" class="container active">
     <div class="profile-header">
       <img src="https://files.catbox.moe/cbivjy.jpg" class="profile-pic" alt="ZalxZhu">
       <h1>ZalxZhu</h1>
+      <p class="status-text">Zhu project & Haruka Development</p>
       <a href="https://www.facebook.com/share/1Zyhm8Fxaf/" target="_blank" class="username-link">@zals_cihuy</a>
     </div>
-    <div class="card"><a href="https://github.com/rhamt24" class="link-item"><span><i class="fab fa-github pink-color"></i> GitHub Profile</span><i class="fas fa-chevron-right" style="opacity: 0.5;"></i></a></div>
-    <div class="card"><a href="https://whatsapp.com/channel/0029VaYuIQT2v1IjZmqTNG3x" class="link-item"><span class="wa-color"><i class="fab fa-whatsapp"></i> WhatsApp Channel</span><i class="fas fa-external-link-alt"></i></a></div>
-    <div class="card" onclick="toggleQRIS()" style="cursor: pointer; border: 1px dashed var(--pink-sakura);"><div class="link-item"><span><i class="fas fa-qrcode pink-color"></i> Support via QRIS</span><i class="fas fa-heart pink-color"></i></div></div>
+
+    <div class="scroll-area">
+      <div class="card">
+        <p style="font-size: 13px; color: #ccc; margin: 0; line-height: 1.6; text-align: center;">
+          Welcome to my development hub. Menjelajahi dunia automasi WhatsApp dengan sentuhan AI untuk masa depan yang lebih efisien.
+        </p>
+      </div>
+
+      <div class="card">
+        <a href="https://github.com/rhamt24" class="link-item">
+          <span><i class="fab fa-github pink-color"></i> GitHub Profile</span>
+          <i class="fas fa-chevron-right" style="opacity: 0.5; font-size: 12px;"></i>
+        </a>
+      </div>
+
+      <div class="card">
+        <a href="https://whatsapp.com/channel/0029VaYuIQT2v1IjZmqTNG3x" class="link-item">
+          <span class="wa-color"><i class="fab fa-whatsapp"></i> WhatsApp Channel</span>
+          <i class="fas fa-external-link-alt" style="font-size: 12px;"></i>
+        </a>
+      </div>
+
+      <div class="card" onclick="toggleQRIS()" style="cursor: pointer; border: 1px dashed var(--pink-sakura);">
+        <div class="link-item">
+          <span><i class="fas fa-qrcode pink-color"></i> Support via QRIS</span>
+          <i class="fas fa-heart pink-color" style="font-size: 12px;"></i>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="bot" class="container">
-    <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;">Bot Projects</h2>
-    <div class="card">
-      <img src="https://files.catbox.moe/xbasea.jpg" class="bot-thumb">
-      <h3>Haruka Bot</h3>
-      <p style="font-size: 12px; color: #ccc;">Bot WhatsApp multifungsi dengan fitur AI cerdas.</p>
-      <button class="btn-main" onclick="window.open('https://wa.me/62857586452296?text=.menu', '_blank')">Hubungi Haruka</button>
-    </div>
-    <div class="card" style="opacity: 0.7;">
-      <span class="retired-label">RETIRED</span>
-      <img src="https://files.catbox.moe/fhk5mo.jpg" class="bot-thumb" style="filter: grayscale(1);">
-      <h3>Zhu desu</h3>
-      <p style="font-size: 12px; color: #bbb;">Project bot pertama saya.</p>
+    <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;">Ongoing Projects</h2>
+    <div class="scroll-area">
+      <div class="card">
+        <img src="https://files.catbox.moe/xbasea.jpg" class="bot-thumb" alt="Haruka">
+        <h3>Haruka Bot</h3>
+        <p style="font-size: 12px; color: #ccc; line-height: 1.6;">
+          Era baru pengembangan bot WhatsApp yang lebih cerdas, responsif, dan stabil. Masa depan automasi ada di sini.
+        </p>
+        <button class="btn-main" onclick="window.open('https://wa.me/62857586452296?text=.menu', '_blank')">Hubungi Haruka</button>
+      </div>
+
+      <div class="card" style="opacity: 0.75;">
+        <span class="retired-label">RETIRED / LEGACY</span>
+        <img src="https://files.catbox.moe/fhk5mo.jpg" class="bot-thumb" style="filter: grayscale(1);" alt="Zhu">
+        <h3>Zhu desu</h3>
+        <p style="font-size: 12px; color: #bbb; line-height: 1.6;">
+          Zhu telah resmi <b>pensiun</b>. Hadir sebagai <b>pengingat perjuangan masa lalu</b> yang telah membentuk pondasi kokoh untuk pengembangan project selanjutnya.
+        </p>
+      </div>
     </div>
   </div>
 
   <div id="feedback" class="container">
-    <h2 style="text-align: center; color: var(--pink-sakura); margin: 0 0 15px;"><i class="fas fa-pen-nib"></i> Guestbook</h2>
-    <div class="giscus-frame">
-      <script src="https://giscus.app/client.js"
-              data-repo="rhamt24/zalxzhu.my.id"
-              data-repo-id="R_kgDOPIa_rg"
-              data-category="General"
-              data-category-id="DIC_kwDOPIa_rs4C1LCD"
-              data-mapping="pathname"
-              data-strict="0"
-              data-reactions-enabled="1"
-              data-emit-metadata="1"
-              data-input-position="top"
-              data-theme="transparent_dark"
-              data-lang="id"
-              data-loading="lazy"
-              crossorigin="anonymous"
-              async>
-      </script>
+    <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;"><i class="fas fa-comments"></i> Discussion Column</h2>
+    <div class="scroll-area">
+      <div class="giscus-frame">
+        <script src="https://giscus.app/client.js"
+                data-repo="rhamt24/zalxzhu.my.id"
+                data-repo-id="R_kgDOPIa_rg"
+                data-category="General"
+                data-category-id="DIC_kwDOPIa_rs4C1LCD"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="1"
+                data-input-position="top"
+                data-theme="transparent_dark"
+                data-lang="id"
+                async>
+        </script>
+      </div>
+      <div class="safe-spacer"></div>
     </div>
   </div>
 
   <div id="qris-modal">
     <div class="qris-box">
-      <h3 style="color: #333; margin: 0 0 10px;">Scan QRIS</h3>
+      <h3 style="color:#333; margin:0 0 10px;">ZalxZhu QRIS</h3>
       <img src="https://files.catbox.moe/baxxkp.jpg" alt="QRIS">
-      <p style="color: #666; font-size: 11px; margin-top: 10px;">Terima kasih!</p>
+      <p style="color:#666; font-size:11px; margin-top:10px;">Terima kasih atas dukungannya!</p>
     </div>
-    <div class="close-qris" onclick="toggleQRIS()">Kembali</div>
+    <div onclick="toggleQRIS()" style="margin-top:20px; background:var(--pink-sakura); color:#111; padding:10px 30px; border-radius:15px; cursor:pointer; font-weight:600;">Kembali</div>
   </div>
 
   <nav class="bottom-nav">
