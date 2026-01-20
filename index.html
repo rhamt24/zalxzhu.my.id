@@ -3,217 +3,230 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ZalxZhu</title>
+  <title>ZalxZhu - Haruka Project</title>
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/rhamt24/zalxzhu.github.io/images/f1e63c4922f7d0b0fc4cf9f7b30cef45.jpg" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
- {
-      box-sizing: border-box;
+    :root {
+      --glass: rgba(255, 255, 255, 0.1);
+      --glass-heavy: rgba(255, 255, 255, 0.18);
+      --pink: #ffb7c5;
+      --wa-green: #25D366;
+      --bg-dark: #0a0a0a;
     }
 
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body, html {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       font-family: 'Poppins', sans-serif;
-      overflow-x: hidden;
-      color: #fff;
+      color: #fff; background-color: var(--bg-dark);
+      overflow-x: hidden; height: 100%;
     }
 
+    /* Background & Overlay */
     .background-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: -2;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      object-fit: cover; z-index: -2;
     }
-
     .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0, 0, 0, 0.6);
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 100%);
       z-index: -1;
     }
 
+    /* Layout SPA */
     .container {
-      max-width: 500px;
-      margin: auto;
-      padding: 40px 20px;
-      text-align: center;
+      max-width: 500px; margin: auto;
+      padding: 40px 20px 120px;
+      min-height: 100vh;
+      display: none;
     }
+    .container.active { display: block; animation: fadeIn 0.6s cubic-bezier(0.39, 0.575, 0.565, 1) both; }
 
+    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed; bottom: 25px; left: 50%;
+      transform: translateX(-50%);
+      width: 85%; max-width: 380px;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 30px;
+      display: flex; justify-content: space-around;
+      padding: 12px; z-index: 100;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+    .nav-item {
+      color: #888; font-size: 20px; cursor: pointer;
+      transition: 0.3s; display: flex; flex-direction: column; align-items: center;
+    }
+    .nav-item.active { color: var(--pink); transform: translateY(-3px); text-shadow: 0 0 10px rgba(255, 183, 197, 0.5); }
+    .nav-item span { font-size: 9px; font-weight: 600; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.5px; }
+
+    /* Profile Header */
     .profile-pic {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid #fff;
-      margin-bottom: 15px;
+      width: 110px; height: 110px; border-radius: 50%;
+      object-fit: cover; border: 3px solid var(--pink);
+      margin-bottom: 12px; box-shadow: 0 0 25px rgba(255, 183, 197, 0.2);
+    }
+    h1 { font-size: 26px; margin: 5px 0; font-weight: 600; }
+    .username { color: #bbb; font-size: 14px; margin-bottom: 30px; letter-spacing: 1px; }
+
+    /* Glass Cards */
+    .card {
+      background: var(--glass); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 22px; padding: 20px; margin-bottom: 18px;
     }
 
-    h1 {
-      font-size: 26px;
-      margin: 10px 0 5px;
-    }
+    /* Buttons & Links */
+    .link-item { text-decoration: none; color: white; display: flex; align-items: center; justify-content: space-between; }
+    .link-item i { font-size: 20px; }
+    .wa-text { color: var(--wa-green) !important; font-weight: 600; }
 
-    .username {
-      color: #bbb;
-      margin-bottom: 30px;
+    /* Bot Section */
+    .bot-img { width: 100%; height: 190px; border-radius: 15px; object-fit: cover; margin-bottom: 15px; }
+    .retired-badge {
+      background: rgba(255, 71, 87, 0.2); color: #ff4757; border: 1px solid #ff4757;
+      padding: 4px 12px; border-radius: 10px; font-size: 11px; font-weight: bold; margin-bottom: 10px; display: inline-block;
     }
+    .btn-pink {
+      width: 100%; background: var(--pink); border: none; padding: 14px;
+      border-radius: 14px; color: #333; font-weight: 600; cursor: pointer; transition: 0.3s;
+    }
+    .btn-pink:hover { transform: scale(1.02); box-shadow: 0 5px 15px rgba(255, 183, 197, 0.3); }
 
-    .link-list {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
+    /* Giscus Box */
+    .giscus-container { background: rgba(0,0,0,0.2); border-radius: 15px; padding: 10px; }
+    .feedback-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: var(--pink); }
 
-    .link-item {
-      background-color: #ffffff10;
-      backdrop-filter: blur(10px);
-      border: 1px solid #ffffff30;
-      border-radius: 12px;
-      padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      gap: 10px;
-      font-size: 18px;
-      color: #fff;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    /* Modal QRIS */
+    #modal-qris {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
+      z-index: 1000; align-items: center; justify-content: center; flex-direction: column;
     }
-
-    .link-item:hover {
-      background-color: #ffffff20;
-      transform: scale(1.03);
-    }
-
-    .link-icon {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .link-icon i {
-      font-size: 20px;
-    }
-
-    .link-desc {
-      font-size: 14px;
-      color: #ccc;
-      opacity: 0;
-      max-height: 0;
-      overflow: hidden;
-      transition: all 0.3s ease;
-    }
-
-    .link-item.active .link-desc {
-      opacity: 1;
-      max-height: 100px;
-    }
-
-    .visit-btn {
-      margin-top: 10px;
-      padding: 8px 16px;
-      background-color: #ffffff30;
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-
-    .visit-btn:hover {
-      background-color: #ffffff50;
-    }
+    .qris-card { background: #fff; padding: 20px; border-radius: 20px; text-align: center; max-width: 300px; }
+    .qris-card img { width: 100%; border-radius: 10px; }
+    .btn-close { margin-top: 20px; background: var(--pink); border: none; padding: 10px 25px; border-radius: 10px; cursor: pointer; font-weight: 600; }
   </style>
 </head>
 <body>
 
-  <!-- 🎥 Background Video -->
   <video class="background-video" autoplay muted loop playsinline>
     <source src="https://cdn.jsdelivr.net/gh/rhamt24/zalxzhu.github.io/mp4/ellen.mp4" type="video/mp4">
   </video>
   <div class="overlay"></div>
 
-  <div class="container">
-    <img src="https://files.catbox.moe/cbivjy.jpg" alt="ZalxZhu" class="profile-pic" />
-    <h1>ZalxZhu</h1>
-    <p class="username">@zals_cihuy</p>
+  <div id="home" class="container active">
+    <center>
+      <img src="https://files.catbox.moe/cbivjy.jpg" alt="ZalxZhu" class="profile-pic" />
+      <h1>ZalxZhu</h1>
+      <p class="username">@zals_cihuy</p>
+    </center>
 
-    <div class="link-list">
-      <div class="link-item" onclick="toggleDesc(this, 'Follow Zhu desu bot on instagram!', 'https://www.instagram.com/zhu_desu.bot/profilecard/?igsh=MXg5ODQ2OHp5eThxeg==')">
-        <div class="link-icon"><i class="fab fa-instagram"></i><span>Instagram</span></div>
-        <div class="link-desc"></div>
-      </div>
-      <div class="link-item" onclick="toggleDesc(this, 'My github profile', 'https://github.com/rhamt24')">
-        <div class="link-icon"><i class="fab fa-github"></i><span>GitHub</span></div>
-        <div class="link-desc"></div>
-      </div>
-      <div class="link-item" onclick="toggleDesc(this, 'Join Telegram Channel', 'https://t.me/zalxzhume')">
-        <div class="link-icon"><i class="fab fa-telegram"></i><span>Telegram</span></div>
-        <div class="link-desc"></div>
-      </div>
-      <div class="link-item" onclick="toggleDesc(this, 'Subscribe my YouTube', 'https://youtube.com/@zalxzhu')">
-        <div class="link-icon"><i class="fab fa-youtube"></i><span>YouTube</span></div>
-        <div class="link-desc"></div>
-      </div>
-      <div class="link-item" onclick="toggleDesc(this, 'Join WhatsApp Community', 'https://chat.whatsapp.com/HdJIBLwoVCoGCZsmBSP10f?mode=ac_c')">
-        <div class="link-icon"><i class="fab fa-whatsapp"></i><span>WhatsApp Community</span></div>
-        <div class="link-desc"></div>
-      </div>
-      <div class="link-item" onclick="toggleDesc(this, 'Follow WhatsApp Channel', 'https://whatsapp.com/channel/0029VacWGv123n3gvXMvrz3j')">
-        <div class="link-icon"><i class="fab fa-whatsapp"></i><span>WhatsApp Channel</span></div>
-        <div class="link-desc"></div>
-      </div>
-      <div class="link-item" onclick="toggleDesc(this, 'Support zhu desu in saweria, to help with server maintenance costs', 'https://saweria.co/ZalxZhu')">
-        <div class="link-icon"><i class="fas fa-donate"></i><span>Saweria</span></div>
-        <div class="link-desc"></div>
+    <div class="card">
+      <a href="https://github.com/rhamt24" class="link-item">
+        <span><i class="fab fa-github" style="color: var(--pink)"></i> &nbsp; GitHub Profile</span>
+        <i class="fas fa-arrow-right" style="font-size: 14px; opacity: 0.5;"></i>
+      </a>
+    </div>
+    <div class="card">
+      <a href="https://whatsapp.com/channel/0029VacWGv123n3gvXMvrz3j" class="link-item">
+        <span class="wa-text"><i class="fab fa-whatsapp"></i> &nbsp; WhatsApp Channel</span>
+        <i class="fas fa-external-link-alt" style="font-size: 14px; color: var(--wa-green);"></i>
+      </a>
+    </div>
+    <div class="card" onclick="openQRIS()" style="cursor: pointer; border: 1px dashed var(--pink);">
+      <div class="link-item">
+        <span><i class="fas fa-qrcode" style="color: var(--pink)"></i> &nbsp; Dukung via QRIS</span>
+        <i class="fas fa-heart" style="font-size: 14px; color: var(--pink);"></i>
       </div>
     </div>
   </div>
 
-  <!-- 🎵 Lagu Latar -->
-  <audio id="bg-music" src="https://cdn.jsdelivr.net/gh/rhamt24/zalxzhu.github.io/mp3/ellen.mp3" autoplay loop></audio>
+  <div id="bot" class="container">
+    <h2 style="text-align: center; color: var(--pink); margin-bottom: 25px;">My Project</h2>
+    
+    <div class="card">
+      <img src="https://files.catbox.moe/6vsc6n.jpg" class="bot-img" alt="Haruka">
+      <h3 style="margin: 5px 0; font-size: 20px;">Haruka Bot</h3>
+      <p style="font-size: 13px; color: #ccc; line-height: 1.6;">Generasi terbaru setelah Zhu desu. Bot WhatsApp multifungsi dengan fitur AI, Downloader, dan Tools canggih.</p>
+      <button class="btn-pink" onclick="window.open('https://wa.me/62xxx', '_blank')">Mulai Chat Haruka</button>
+    </div>
 
-  <!-- 🔉 Suara Klik -->
-  <audio id="click-sound" src="https://www.myinstants.com/media/sounds/click-mouse.mp3"></audio>
+    <div class="card" style="opacity: 0.75;">
+      <span class="retired-badge">RETIRED / PENSIUN</span>
+      <img src="https://files.catbox.moe/cbivjy.jpg" class="bot-img" style="filter: grayscale(1);" alt="Zhu desu">
+      <h3 style="margin: 5px 0; color: #aaa;">Zhu desu</h3>
+      <p style="font-size: 13px; color: #999;">Bot pertama yang menemani perjalanan saya. Kini telah pensiun dan menjadi bagian dari arsip sejarah.</p>
+    </div>
+  </div>
+
+  <div id="feedback" class="container">
+    <div class="feedback-header">
+      <i class="fas fa-comments fa-lg"></i>
+      <h2 style="margin: 0;">Guestbook</h2>
+    </div>
+    <div class="card giscus-container">
+      <script src="https://giscus.app/client.js"
+        data-repo="rhamt24/[NAMA_REPO_KAMU]"
+        data-repo-id="[ID_REPO_KAMU]"
+        data-category="Announcements"
+        data-category-id="[ID_CATEGORY_KAMU]"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="transparent_dark"
+        data-lang="id"
+        crossorigin="anonymous"
+        async>
+      </script>
+    </div>
+  </div>
+
+  <div id="modal-qris">
+    <div class="qris-card">
+      <h3 style="color: #333; margin-top: 0;">Scan QRIS</h3>
+      <img src="https://files.catbox.moe/xxxx.jpg" alt="QRIS Ijul"> <p style="color: #666; font-size: 12px; margin-top: 10px;">Terima kasih atas dukungannya!</p>
+    </div>
+    <button class="btn-close" onclick="closeQRIS()">Tutup</button>
+  </div>
+
+  <nav class="bottom-nav">
+    <div class="nav-item active" onclick="showPage('home')"><i class="fas fa-home"></i><span>Home</span></div>
+    <div class="nav-item" onclick="showPage('bot')"><i class="fas fa-robot"></i><span>My Bot</span></div>
+    <div class="nav-item" onclick="showPage('feedback')"><i class="fas fa-pen-fancy"></i><span>Review</span></div>
+  </nav>
+
+  <audio id="bg-music" src="https://cdn.jsdelivr.net/gh/rhamt24/zalxzhu.github.io/mp3/ellen.mp3" loop></audio>
 
   <script>
-    // Auto play lagu dengan volume pelan
+    // Audio Manager
     window.addEventListener('click', () => {
       const music = document.getElementById('bg-music');
-      music.volume = 0.3; // ✅ Volume 30%
+      music.volume = 0.25;
       music.play().catch(() => {});
-    });
+    }, { once: true });
 
-    function toggleDesc(el, text, url) {
-      const clickSound = document.getElementById("click-sound");
-      clickSound.currentTime = 0;
-      clickSound.play();
-
-      const isActive = el.classList.contains("active");
-
-      document.querySelectorAll('.link-item').forEach(item => {
-        item.classList.remove("active");
-        item.querySelector('.link-desc').innerHTML = '';
-      });
-
-      if (!isActive) {
-        el.classList.add("active");
-        el.querySelector('.link-desc').innerHTML = `
-          ${text}<br>
-          <button class="visit-btn" onclick="event.stopPropagation(); window.open('${url}', '_blank')">Visit</button>
-        `;
-      }
+    // SPA Engine
+    function showPage(pageId) {
+      document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      
+      document.getElementById(pageId).classList.add('active');
+      event.currentTarget.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+
+    // Modal Control
+    function openQRIS() { document.getElementById('modal-qris').style.display = 'flex'; }
+    function closeQRIS() { document.getElementById('modal-qris').style.display = 'none'; }
   </script>
 </body>
 </html>
