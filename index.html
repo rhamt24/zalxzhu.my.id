@@ -24,7 +24,6 @@
       overflow-x: hidden; min-height: 100vh;
     }
 
-    /* Background Video */
     .background-video {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       object-fit: cover; z-index: -2;
@@ -35,17 +34,21 @@
       z-index: -1;
     }
 
-    /* Container SPA */
     .container {
       max-width: 480px; margin: auto;
-      padding: 50px 20px 250px; /* Ditambah ruang sangat luas di bawah agar tidak terpotong */
+      padding: 50px 20px 100px;
       display: none;
       min-height: 100vh;
     }
     .container.active { display: block; animation: slideUp 0.6s ease; }
+    
+    /* Ruang ekstra khusus untuk halaman feedback agar tidak terpotong nav */
+    #feedback.active {
+      padding-bottom: 350px !important; 
+    }
+
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Bottom Nav */
     .bottom-nav {
       position: fixed; bottom: 25px; left: 50%;
       transform: translateX(-50%);
@@ -55,7 +58,7 @@
       border: 1px solid var(--glass-border);
       border-radius: 30px;
       display: flex; justify-content: space-around;
-      padding: 12px; z-index: 100;
+      padding: 12px; z-index: 1000;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .nav-item {
@@ -65,7 +68,6 @@
     .nav-item.active { color: var(--pink-sakura); transform: translateY(-5px); text-shadow: 0 0 8px var(--pink-glow); }
     .nav-item span { font-size: 10px; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
 
-    /* Profile Header */
     .profile-header { text-align: center; margin-bottom: 30px; }
     .profile-pic {
       width: 105px; height: 105px; border-radius: 50%;
@@ -76,19 +78,16 @@
     .username-link { color: #bbb; text-decoration: none; font-size: 14px; transition: 0.3s; }
     .username-link:hover { color: var(--pink-sakura); }
 
-    /* Card Design */
     .card {
       background: var(--glass); backdrop-filter: blur(15px);
       border: 1px solid var(--glass-border);
       border-radius: 20px; padding: 20px; margin-bottom: 15px;
     }
 
-    /* Links */
     .link-item { text-decoration: none; color: white; display: flex; align-items: center; justify-content: space-between; }
     .wa-color { color: var(--wa-green) !important; font-weight: 600; }
     .pink-color { color: var(--pink-sakura) !important; }
 
-    /* Bot Section */
     .bot-thumb { width: 100%; height: 190px; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
     .retired-label {
       background: rgba(255, 71, 87, 0.2); color: #ff4757; border: 1px solid #ff4757;
@@ -99,23 +98,28 @@
       border-radius: 12px; color: #111; font-weight: bold; cursor: pointer; transition: 0.3s;
     }
 
-    /* QRIS Modal */
     #qris-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.92); z-index: 1000; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center;
       flex-direction: column; animation: fadeIn 0.3s ease;
     }
     .qris-box { background: white; padding: 15px; border-radius: 25px; text-align: center; width: 300px; box-shadow: 0 0 30px var(--pink-glow); }
     .qris-box img { width: 100%; border-radius: 15px; display: block; }
     .close-qris { margin-top: 25px; color: #111; background: var(--pink-sakura); padding: 10px 30px; border-radius: 15px; cursor: pointer; font-weight: 600; }
 
-    /* Giscus Fix */
     .giscus-frame {
       background: rgba(255, 255, 255, 0.03);
       border-radius: 20px;
       padding: 15px;
-      min-height: 700px; /* Tinggi ditambah agar menu login GitHub muncul penuh */
+      margin-bottom: 20px;
       overflow: visible;
+    }
+    
+    /* Memberikan ruang kosong transparan di paling bawah agar nav tidak menutupi tombol */
+    .bottom-spacer {
+      height: 150px;
+      width: 100%;
+      display: block;
     }
     
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -195,6 +199,7 @@
               async>
       </script>
     </div>
+    <div class="bottom-spacer"></div>
   </div>
 
   <div id="qris-modal">
