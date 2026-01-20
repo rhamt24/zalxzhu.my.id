@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -22,7 +21,7 @@
       margin: 0; padding: 0;
       font-family: 'Poppins', sans-serif;
       color: #fff; background-color: #000;
-      overflow-x: hidden; min-height: 100vh;
+      min-height: 100vh;
     }
 
     .background-video {
@@ -42,6 +41,13 @@
       min-height: 100vh;
     }
     .container.active { display: block; animation: slideUp 0.6s ease; }
+
+    /* Fix khusus halaman feedback: Ruang sangat luas agar tombol Kirim tidak terpotong Nav */
+    #feedback.active {
+      padding-bottom: 400px !important; 
+    }
+
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .bottom-nav {
       position: fixed; bottom: 25px; left: 50%;
@@ -92,19 +98,18 @@
       border-radius: 12px; color: #111; font-weight: bold; cursor: pointer; transition: 0.3s;
     }
 
-    /* Giscus Frame: Scrollable Area */
+    /* Giscus Frame: Mengikuti tinggi konten secara otomatis */
     .giscus-frame {
       background: rgba(255, 255, 255, 0.03);
       border-radius: 20px;
       padding: 15px;
-      margin-bottom: 10px;
-      height: 600px; /* Tinggi tetap agar bisa digulirkan secara internal */
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch; /* Halus untuk mobile */
-      border: 1px solid var(--glass-border);
+      margin-bottom: 20px;
+      min-height: 400px;
+      height: auto;
+      overflow: visible;
     }
-
-    .bottom-spacer { height: 250px; width: 100%; }
+    
+    .bottom-spacer { height: 200px; width: 100%; display: block; }
 
     #qris-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -115,7 +120,6 @@
     .qris-box img { width: 100%; border-radius: 15px; display: block; }
     .close-qris { margin-top: 25px; color: #111; background: var(--pink-sakura); padding: 10px 30px; border-radius: 15px; cursor: pointer; font-weight: 600; }
 
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -194,7 +198,7 @@
     <div class="qris-box">
       <h3 style="color: #333; margin-top: 0; margin-bottom: 10px;">Scan QRIS</h3>
       <img src="https://files.catbox.moe/baxxkp.jpg" alt="QRIS">
-      <p style="color: #666; font-size: 11px; margin-top: 10px;">Terima kasih!</p>
+      <p style="color: #666; font-size: 11px; margin-top: 10px;">Terima kasih atas dukungannya!</p>
     </div>
     <div class="close-qris" onclick="toggleQRIS()">Kembali</div>
   </div>
@@ -229,4 +233,3 @@
   </script>
 </body>
 </html>
-
