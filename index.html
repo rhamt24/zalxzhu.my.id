@@ -7,6 +7,7 @@
   <link rel="icon" href="https://cdn.jsdelivr.net/gh/rhamt24/zalxzhu.github.io/images/f1e63c4922f7d0b0fc4cf9f7b30cef45.jpg" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --pink-sakura: #ffb7c5;
@@ -36,7 +37,6 @@
       z-index: -1;
     }
 
-    /* Container SPA */
     .container {
       max-width: 480px; margin: auto;
       padding: 30px 20px 0;
@@ -47,11 +47,10 @@
 
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Navigasi Bawah */
     .bottom-nav {
       position: fixed; bottom: 25px; left: 50%;
       transform: translateX(-50%);
-      width: 90%; max-width: 400px;
+      width: 95%; max-width: 450px;
       background: rgba(15, 15, 15, 0.85);
       backdrop-filter: blur(25px);
       border: 1px solid var(--glass-border);
@@ -61,13 +60,13 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .nav-item {
-      color: #666; font-size: 20px; cursor: pointer; transition: 0.3s;
+      color: #666; font-size: 18px; cursor: pointer; transition: 0.3s;
       display: flex; flex-direction: column; align-items: center;
+      flex: 1;
     }
     .nav-item.active { color: var(--pink-sakura); transform: translateY(-5px); text-shadow: 0 0 8px var(--pink-glow); }
-    .nav-item span { font-size: 10px; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
+    .nav-item span { font-size: 9px; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
 
-    /* Profile Section */
     .profile-header { text-align: center; margin-bottom: 20px; flex-shrink: 0; }
     .profile-pic {
       width: 95px; height: 95px; border-radius: 50%;
@@ -77,7 +76,6 @@
     h1 { font-size: 22px; margin: 0; letter-spacing: 1px; }
     .username-link { color: #bbb; text-decoration: none; font-size: 13px; display: block; margin-top: 2px; }
 
-    /* Area Scroll Mandiri */
     .scroll-area {
       overflow-y: auto;
       flex-grow: 1;
@@ -94,8 +92,9 @@
     .wa-color { color: var(--wa-green) !important; font-weight: 600; }
     .pink-color { color: var(--pink-sakura) !important; }
 
-    /* Bot Section */
-    .bot-thumb { width: 100%; height: 180px; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
+    .bot-thumb, .news-media { width: 100%; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
+    .bot-thumb { height: 180px; }
+    
     .retired-label {
       background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757;
       padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-bottom: 8px; display: inline-block;
@@ -105,11 +104,10 @@
       border-radius: 12px; color: #111; font-weight: bold; cursor: pointer;
     }
 
-    /* Discussion Page: Full Screen Scroll */
     .giscus-container {
       flex-grow: 1;
       overflow-y: auto;
-      padding-bottom: 150px; /* Jarak ekstra untuk tombol kirim */
+      padding-bottom: 150px;
       -webkit-overflow-scrolling: touch;
     }
 
@@ -120,6 +118,10 @@
     }
     .qris-box { background: white; padding: 15px; border-radius: 25px; text-align: center; width: 300px; box-shadow: 0 0 30px var(--pink-glow); }
     .qris-box img { width: 100%; border-radius: 15px; }
+
+    /* News specific */
+    .news-date { font-size: 10px; color: #666; display: block; margin-top: 8px; }
+    .loading-news { text-align: center; color: var(--pink-sakura); padding: 20px; }
   </style>
 </head>
 <body>
@@ -146,6 +148,13 @@
       <div class="card"><a href="https://github.com/rhamt24" class="link-item"><span><i class="fab fa-github pink-color"></i> GitHub Profile</span><i class="fas fa-chevron-right" style="opacity: 0.5; font-size: 12px;"></i></a></div>
       <div class="card"><a href="https://whatsapp.com/channel/0029VaYuIQT2v1IjZmqTNG3x" class="link-item"><span class="wa-color"><i class="fab fa-whatsapp"></i> WhatsApp Channel</span><i class="fas fa-external-link-alt" style="font-size: 12px;"></i></a></div>
       <div class="card" onclick="toggleQRIS()" style="cursor: pointer; border: 1px dashed var(--pink-sakura);"><div class="link-item"><span><i class="fas fa-qrcode pink-color"></i> Support via QRIS</span><i class="fas fa-heart pink-color" style="font-size: 12px;"></i></div></div>
+    </div>
+  </div>
+
+  <div id="news" class="container">
+    <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;"><i class="fas fa-newspaper"></i> News Update</h2>
+    <div class="scroll-area" id="news-container">
+        <div class="loading-news">Memuat berita terbaru...</div>
     </div>
   </div>
 
@@ -198,6 +207,7 @@
 
   <nav class="bottom-nav">
     <div class="nav-item active" onclick="showPage('home')"><i class="fas fa-home"></i><span>Home</span></div>
+    <div class="nav-item" onclick="showPage('news')"><i class="fas fa-newspaper"></i><span>News</span></div>
     <div class="nav-item" onclick="showPage('bot')"><i class="fas fa-robot"></i><span>Bot</span></div>
     <div class="nav-item" onclick="showPage('feedback')"><i class="fas fa-comments"></i><span>Review</span></div>
   </nav>
@@ -205,6 +215,54 @@
   <audio id="bg-music" src="https://cdn.jsdelivr.net/gh/rhamt24/zalxzhu.github.io/mp3/ellen.mp3" loop></audio>
 
   <script>
+    // --- KONFIGURASI SUPABASE ---
+    const _supabaseUrl = 'https://omquwluqxmixiqdmwkir.supabase.co';
+    const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tcXV3bHVxeG1peGlxZG13a2lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4OTE3MzUsImV4cCI6MjA4NDQ2NzczNX0.nVQhgPBzhWgpT1aELHx95MDv7qQcErtDs3C-5pB9qRQ';
+    const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
+
+    async function loadNewsData() {
+        const container = document.getElementById('news-container');
+        
+        const { data, error } = await _supabase
+            .from('news')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            container.innerHTML = `<div class="card">Gagal memuat berita: ${error.message}</div>`;
+            return;
+        }
+
+        if (data.length === 0) {
+            container.innerHTML = `<div class="card" style="text-align:center;">Belum ada berita terbaru.</div>`;
+            return;
+        }
+
+        container.innerHTML = ''; // Hapus loading
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            let mediaHtml = '';
+            if (item.media_url) {
+                if (item.type === 'video') {
+                    mediaHtml = `<video src="${item.media_url}" class="news-media" controls></video>`;
+                } else {
+                    mediaHtml = `<img src="${item.media_url}" class="news-media" alt="${item.title}">`;
+                }
+            }
+
+            card.innerHTML = `
+                ${mediaHtml}
+                <h3 style="margin:0; color:var(--pink-sakura);">${item.title}</h3>
+                <p style="font-size:12px; color:#ccc; line-height:1.6; margin-top:8px;">${item.content}</p>
+                <span class="news-date">${new Date(item.created_at).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}</span>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    // --- SISTEM NAVIGASI ---
     window.addEventListener('click', () => {
       const music = document.getElementById('bg-music');
       music.volume = 0.25;
@@ -214,8 +272,17 @@
     function showPage(pageId) {
       document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
+      
+      const targetPage = document.getElementById(pageId);
+      targetPage.classList.add('active');
+      
+      // Update icon active
       event.currentTarget.classList.add('active');
+
+      // Ambil data news jika tab News dibuka
+      if (pageId === 'news') {
+          loadNewsData();
+      }
     }
 
     function toggleQRIS() {
