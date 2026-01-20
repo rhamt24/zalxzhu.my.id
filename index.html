@@ -50,13 +50,13 @@
     .bottom-nav {
       position: fixed; bottom: 25px; left: 50%;
       transform: translateX(-50%);
-      width: 95%; max-width: 450px;
+      width: 95%; max-width: 480px;
       background: rgba(15, 15, 15, 0.85);
       backdrop-filter: blur(25px);
       border: 1px solid var(--glass-border);
       border-radius: 30px;
       display: flex; justify-content: space-around;
-      padding: 12px; z-index: 2000;
+      padding: 12px 5px; z-index: 2000;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .nav-item {
@@ -65,7 +65,7 @@
       flex: 1;
     }
     .nav-item.active { color: var(--pink-sakura); transform: translateY(-5px); text-shadow: 0 0 8px var(--pink-glow); }
-    .nav-item span { font-size: 9px; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
+    .nav-item span { font-size: 8px; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
 
     .profile-header { text-align: center; margin-bottom: 20px; flex-shrink: 0; }
     .profile-pic {
@@ -92,8 +92,8 @@
     .wa-color { color: var(--wa-green) !important; font-weight: 600; }
     .pink-color { color: var(--pink-sakura) !important; }
 
-    .bot-thumb, .news-media { width: 100%; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
-    .bot-thumb { height: 180px; }
+    .bot-thumb, .news-media, .placeholder-thumb { width: 100%; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
+    .bot-thumb, .placeholder-thumb { height: 180px; }
     
     .retired-label {
       background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757;
@@ -119,7 +119,6 @@
     .qris-box { background: white; padding: 15px; border-radius: 25px; text-align: center; width: 300px; box-shadow: 0 0 30px var(--pink-glow); }
     .qris-box img { width: 100%; border-radius: 15px; }
 
-    /* News specific */
     .news-date { font-size: 10px; color: #666; display: block; margin-top: 8px; }
     .loading-news { text-align: center; color: var(--pink-sakura); padding: 20px; }
   </style>
@@ -159,7 +158,7 @@
   </div>
 
   <div id="bot" class="container">
-    <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;">Bot Projects</h2>
+    <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;"><i class="fas fa-robot"></i> Bot Projects</h2>
     <div class="scroll-area">
       <div class="card">
         <img src="https://files.catbox.moe/xbasea.jpg" class="bot-thumb" alt="Haruka">
@@ -172,6 +171,17 @@
         <img src="https://files.catbox.moe/fhk5mo.jpg" class="bot-thumb" style="filter: grayscale(1);" alt="Zhu">
         <h3>Zhu desu</h3>
         <p style="font-size: 12px; color: #bbb; line-height: 1.6;">Zhu telah resmi <b>pensiun</b>. Hadir di sini sebagai <b>pengingat perjuangan masa lalu</b> yang telah membentuk pondasi kokoh untuk pengembangan project selanjutnya.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="other" class="container">
+    <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;"><i class="fas fa-cubes"></i> Other Projects</h2>
+    <div class="scroll-area">
+      <div class="card">
+        <img src="https://files.catbox.moe/cbivjy.jpg" class="placeholder-thumb" alt="Placeholder">
+        <h3 style="text-align: center;">Empty</h3>
+        <p style="font-size: 12px; color: #ccc; line-height: 1.6; text-align: center;">Belum ada proyek lain untuk saat ini. Nantikan pembaruan selanjutnya!</p>
       </div>
     </div>
   </div>
@@ -209,6 +219,7 @@
     <div class="nav-item active" onclick="showPage('home')"><i class="fas fa-home"></i><span>Home</span></div>
     <div class="nav-item" onclick="showPage('news')"><i class="fas fa-newspaper"></i><span>News</span></div>
     <div class="nav-item" onclick="showPage('bot')"><i class="fas fa-robot"></i><span>Bot</span></div>
+    <div class="nav-item" onclick="showPage('other')"><i class="fas fa-cubes"></i><span>Other</span></div>
     <div class="nav-item" onclick="showPage('feedback')"><i class="fas fa-comments"></i><span>Review</span></div>
   </nav>
 
@@ -238,7 +249,7 @@
             return;
         }
 
-        container.innerHTML = ''; // Hapus loading
+        container.innerHTML = ''; 
         data.forEach(item => {
             const card = document.createElement('div');
             card.className = 'card';
@@ -276,10 +287,11 @@
       const targetPage = document.getElementById(pageId);
       targetPage.classList.add('active');
       
-      // Update icon active
-      event.currentTarget.classList.add('active');
+      const currentNavItem = Array.from(document.querySelectorAll('.nav-item')).find(item => 
+        item.getAttribute('onclick').includes(`'${pageId}'`)
+      );
+      if (currentNavItem) currentNavItem.classList.add('active');
 
-      // Ambil data news jika tab News dibuka
       if (pageId === 'news') {
           loadNewsData();
       }
