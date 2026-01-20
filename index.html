@@ -12,9 +12,9 @@
     :root {
       --pink-sakura: #ffb7c5;
       --pink-glow: rgba(255, 183, 197, 0.5);
-      --wa-green: #25D366;
-      --glass: rgba(255, 255, 255, 0.08);
+      --glass: rgba(20, 20, 20, 0.9);
       --glass-border: rgba(255, 255, 255, 0.15);
+      --wa-green: #25D366;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -37,6 +37,94 @@
       z-index: -1;
     }
 
+    /* --- MUSIC POPUP PLAYER --- */
+    #music-popup {
+      position: fixed; top: 100px; right: 0; /* Default nempel kanan */
+      width: 280px; 
+      background: var(--glass);
+      backdrop-filter: blur(20px); border-radius: 16px;
+      border: 1px solid var(--glass-border); z-index: 4000;
+      padding: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    
+    /* Tombol Hide (-) */
+    .hide-btn {
+      position: absolute; top: -10px; right: -8px;
+      width: 24px; height: 24px; background: var(--pink-sakura);
+      color: #000; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; cursor: pointer; z-index: 10;
+      box-shadow: 0 0 10px var(--pink-glow);
+    }
+
+    /* --- ISI PLAYER --- */
+    .player-info { display: flex; gap: 12px; align-items: center; }
+    
+    .song-cover { 
+      width: 55px; height: 55px; 
+      aspect-ratio: 1/1; 
+      border-radius: 10px; 
+      object-fit: cover; 
+      border: 1px solid var(--pink-sakura); 
+      flex-shrink: 0; 
+      transition: 0.4s;
+    }
+    
+    .song-details { overflow: hidden; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+    .song-title { font-size: 12px; font-weight: 600; color: var(--pink-sakura); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .song-author { font-size: 10px; color: #ccc; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .player-controls { display: flex; align-items: center; gap: 10px; }
+    .play-btn {
+      background: var(--pink-sakura); border: none; width: 35px; height: 35px;
+      border-radius: 50%; color: #111; cursor: pointer; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.2s;
+    }
+    .play-btn:active { transform: scale(0.9); }
+    
+    .progress-box { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
+    .progress-bar-container { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; position: relative; cursor: pointer; }
+    #progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--pink-sakura); width: 0%; border-radius: 2px; }
+    .time-info { display: flex; justify-content: space-between; font-size: 9px; color: #888; font-family: monospace; }
+    
+    input[type=range] { -webkit-appearance: none; width: 60px; background: transparent; }
+    input[type=range]::-webkit-slider-runnable-track { height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; background: var(--pink-sakura); border-radius: 50%; margin-top: -4px; box-shadow: 0 0 5px var(--pink-glow); }
+
+    /* --- STATE: MINIMIZED (BULAT PERFECT) --- */
+    #music-popup.minimized {
+      width: 65px; height: 65px; 
+      padding: 0; border-radius: 50%; 
+      overflow: hidden; cursor: pointer;
+      border: 2px solid var(--pink-sakura);
+      background: rgba(0,0,0,0.8);
+      justify-content: center; align-items: center;
+    }
+
+    #music-popup.minimized .hide-btn,
+    #music-popup.minimized .song-details,
+    #music-popup.minimized .player-controls { display: none !important; }
+    
+    #music-popup.minimized .player-info { width: 100%; height: 100%; margin: 0; padding: 0; }
+    #music-popup.minimized .song-cover {
+      width: 100%; height: 100%;
+      border-radius: 50% !important; 
+      border: none; margin: 0;
+      animation: spinVinyl 6s linear infinite;
+    }
+    
+    #music-popup.minimized.paused .song-cover { animation-play-state: paused; }
+    @keyframes spinVinyl { 100% { transform: rotate(360deg); } }
+
+    /* Docking Positions */
+    #music-popup.minimized.dock-left { left: 10px !important; right: auto !important; }
+    #music-popup.minimized.dock-right { right: 10px !important; left: auto !important; }
+
+
+    /* --- MAIN LAYOUT --- */
     .container {
       max-width: 480px; margin: auto;
       padding: 30px 20px 0;
@@ -51,7 +139,7 @@
       position: fixed; bottom: 25px; left: 50%;
       transform: translateX(-50%);
       width: 95%; max-width: 480px;
-      background: rgba(15, 15, 15, 0.85);
+      background: rgba(20, 20, 20, 0.9);
       backdrop-filter: blur(25px);
       border: 1px solid var(--glass-border);
       border-radius: 30px;
@@ -76,59 +164,61 @@
     h1 { font-size: 22px; margin: 0; letter-spacing: 1px; }
     .username-link { color: #bbb; text-decoration: none; font-size: 13px; display: block; margin-top: 2px; }
 
-    .scroll-area {
-      overflow-y: auto;
-      flex-grow: 1;
-      padding-bottom: 120px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .card {
-      background: var(--glass); backdrop-filter: blur(15px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px; padding: 18px; margin-bottom: 15px;
-    }
+    .scroll-area { overflow-y: auto; flex-grow: 1; padding-bottom: 150px; -webkit-overflow-scrolling: touch; }
+    .card { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(15px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 18px; margin-bottom: 15px; }
     .link-item { text-decoration: none; color: white; display: flex; align-items: center; justify-content: space-between; }
     .wa-color { color: var(--wa-green) !important; font-weight: 600; }
     .pink-color { color: var(--pink-sakura) !important; }
 
     .bot-thumb, .news-media, .placeholder-thumb { width: 100%; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
     .bot-thumb, .placeholder-thumb { height: 180px; }
-    
-    .retired-label {
-      background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757;
-      padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-bottom: 8px; display: inline-block;
-    }
-    .btn-main {
-      width: 100%; background: var(--pink-sakura); border: none; padding: 12px;
-      border-radius: 12px; color: #111; font-weight: bold; cursor: pointer;
-    }
+    .retired-label { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-bottom: 8px; display: inline-block; }
+    .btn-main { width: 100%; background: var(--pink-sakura); border: none; padding: 12px; border-radius: 12px; color: #111; font-weight: bold; cursor: pointer; }
+    .giscus-container { flex-grow: 1; overflow-y: auto; padding-bottom: 180px; }
 
-    .giscus-container {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding-bottom: 150px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    #qris-modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.92); z-index: 3000; align-items: center; justify-content: center;
-      flex-direction: column;
-    }
-    .qris-box { background: white; padding: 15px; border-radius: 25px; text-align: center; width: 300px; box-shadow: 0 0 30px var(--pink-glow); }
+    #qris-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 5000; align-items: center; justify-content: center; flex-direction: column; }
+    .qris-box { background: white; padding: 15px; border-radius: 25px; text-align: center; width: 300px; }
     .qris-box img { width: 100%; border-radius: 15px; }
-
     .news-date { font-size: 10px; color: #666; display: block; margin-top: 8px; }
     .loading-news { text-align: center; color: var(--pink-sakura); padding: 20px; }
   </style>
 </head>
-<body>
+<body onclick="startAudioOnce()">
 
   <video class="background-video" autoplay muted loop playsinline>
     <source src="https://cdn.jsdelivr.net/gh/rhamt24/zalxzhu.github.io/mp4/ellen.mp4" type="video/mp4">
   </video>
   <div class="overlay"></div>
+
+  <div id="music-popup" class="minimized dock-right">
+    <div class="hide-btn" onclick="toggleMinimize(event)">
+      <i class="fas fa-minus"></i>
+    </div>
+
+    <div class="player-info">
+      <img src="https://i.scdn.co/image/ab67616d0000b273df8d4f8cd143232b98c92552" class="song-cover" id="popup-cover" alt="Cover">
+      <div class="song-details">
+        <p class="song-title">MoeChakkaFire</p>
+        <p class="song-author">エレン・ジョー (CV:若山詩音)</p>
+      </div>
+    </div>
+    
+    <div class="player-controls">
+      <button class="play-btn" id="music-btn" onclick="toggleMusic(event)">
+        <i class="fas fa-play"></i>
+      </button>
+      <div class="progress-box">
+        <div class="progress-bar-container" onclick="seekAudio(event)">
+          <div id="progress-fill"></div>
+        </div>
+        <div class="time-info">
+          <span id="time-current">0:00</span>
+          <span id="time-duration">0:00</span>
+        </div>
+      </div>
+      <input type="range" min="0" max="1" step="0.01" value="0.25" oninput="changeVolume(this.value)" onclick="event.stopPropagation()">
+    </div>
+  </div>
 
   <div id="home" class="container active">
     <div class="profile-header">
@@ -231,38 +321,144 @@
     const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tcXV3bHVxeG1peGlxZG13a2lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4OTE3MzUsImV4cCI6MjA4NDQ2NzczNX0.nVQhgPBzhWgpT1aELHx95MDv7qQcErtDs3C-5pB9qRQ';
     const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 
+    // --- LOGIKA MUSIC PLAYER ---
+    const music = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-btn');
+    const popup = document.getElementById('music-popup');
+    const progressFill = document.getElementById('progress-fill');
+    
+    function formatTime(s) {
+      if(isNaN(s)) return "0:00";
+      const m = Math.floor(s/60);
+      const sec = Math.floor(s%60);
+      return `${m}:${sec<10?'0':''}${sec}`;
+    }
+
+    music.addEventListener('timeupdate', () => {
+      if(!music.duration) return;
+      const pct = (music.currentTime / music.duration) * 100;
+      progressFill.style.width = `${pct}%`;
+      document.getElementById('time-current').innerText = formatTime(music.currentTime);
+      document.getElementById('time-duration').innerText = formatTime(music.duration);
+    });
+
+    function toggleMusic(e) {
+      if(e) e.stopPropagation();
+      if(music.paused) {
+        music.play();
+        musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        popup.classList.remove('paused');
+      } else {
+        music.pause();
+        musicBtn.innerHTML = '<i class="fas fa-play"></i>';
+        popup.classList.add('paused');
+      }
+    }
+
+    function changeVolume(val) { music.volume = val; }
+    
+    function seekAudio(e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      music.currentTime = pct * music.duration;
+    }
+
+    function startAudioOnce() {
+      if(music.paused) {
+        music.volume = 0.25;
+        music.play().then(() => {
+          musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+          popup.classList.remove('paused');
+        }).catch(()=>{});
+      }
+    }
+
+    // --- LOGIKA MINIMIZE / HIDE (DEFAULT TRUE) ---
+    // Ubah ke true supaya defaultnya hide
+    let isMinimized = true;
+
+    function toggleMinimize(e) {
+      if(e) e.stopPropagation();
+      isMinimized = !isMinimized;
+      
+      if(isMinimized) {
+        const rect = popup.getBoundingClientRect();
+        const screenMid = window.innerWidth / 2;
+        popup.classList.add('minimized');
+        
+        // Cek nempel kiri atau kanan
+        if(rect.left + rect.width/2 < screenMid) {
+          popup.classList.add('dock-left');
+          popup.classList.remove('dock-right');
+        } else {
+          popup.classList.add('dock-right');
+          popup.classList.remove('dock-left');
+        }
+      } else {
+        popup.classList.remove('minimized');
+        popup.classList.remove('dock-left');
+        popup.classList.remove('dock-right');
+      }
+    }
+    
+    // Klik saat minimized untuk membuka
+    popup.addEventListener('click', (e) => {
+      if(isMinimized && !e.target.closest('.hide-btn')) {
+        toggleMinimize(e);
+      }
+    });
+
+    // --- DRAGGABLE LOGIC ---
+    let isDragging = false, offset = [0,0];
+
+    function startDrag(e) {
+      if(isMinimized || e.target.closest('button') || e.target.closest('input')) return;
+      isDragging = true;
+      const cX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+      const cY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+      offset = [popup.offsetLeft - cX, popup.offsetTop - cY];
+      popup.style.transition = 'none'; 
+    }
+
+    function doDrag(e) {
+      if(!isDragging) return;
+      e.preventDefault();
+      const cX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+      const cY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+      popup.style.left = (cX + offset[0]) + 'px';
+      popup.style.top = (cY + offset[1]) + 'px';
+      popup.style.right = 'auto'; 
+    }
+
+    function endDrag() {
+      isDragging = false;
+      popup.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+    }
+
+    popup.addEventListener('mousedown', startDrag);
+    popup.addEventListener('touchstart', startDrag, {passive: false});
+    document.addEventListener('mousemove', doDrag);
+    document.addEventListener('touchmove', doDrag, {passive: false});
+    document.addEventListener('mouseup', endDrag);
+    document.addEventListener('touchend', endDrag);
+
+    // --- SUPABASE NEWS ---
     async function loadNewsData() {
         const container = document.getElementById('news-container');
-        
-        const { data, error } = await _supabase
-            .from('news')
-            .select('*')
-            .order('created_at', { ascending: false });
+        const { data, error } = await _supabase.from('news').select('*').order('created_at', { ascending: false });
 
-        if (error) {
-            container.innerHTML = `<div class="card">Gagal memuat berita: ${error.message}</div>`;
-            return;
-        }
-
-        if (data.length === 0) {
-            container.innerHTML = `<div class="card" style="text-align:center;">Belum ada berita terbaru.</div>`;
-            return;
-        }
+        if (error) { container.innerHTML = `<div class="card">Error: ${error.message}</div>`; return; }
+        if (!data.length) { container.innerHTML = `<div class="card" style="text-align:center;">Belum ada berita.</div>`; return; }
 
         container.innerHTML = ''; 
         data.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            
+            const card = document.createElement('div'); card.className = 'card';
             let mediaHtml = '';
             if (item.media_url) {
-                if (item.type === 'video') {
-                    mediaHtml = `<video src="${item.media_url}" class="news-media" controls></video>`;
-                } else {
-                    mediaHtml = `<img src="${item.media_url}" class="news-media" alt="${item.title}">`;
-                }
+                mediaHtml = item.type === 'video' 
+                  ? `<video src="${item.media_url}" class="news-media" controls></video>`
+                  : `<img src="${item.media_url}" class="news-media" alt="${item.title}">`;
             }
-
             card.innerHTML = `
                 ${mediaHtml}
                 <h3 style="margin:0; color:var(--pink-sakura);">${item.title}</h3>
@@ -273,34 +469,34 @@
         });
     }
 
-    // --- SISTEM NAVIGASI ---
-    window.addEventListener('click', () => {
-      const music = document.getElementById('bg-music');
-      music.volume = 0.25;
-      music.play().catch(() => {});
-    }, { once: true });
-
+    // --- NAVIGASI ---
     function showPage(pageId) {
       document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       
-      const targetPage = document.getElementById(pageId);
-      targetPage.classList.add('active');
-      
+      document.getElementById(pageId).classList.add('active');
       const currentNavItem = Array.from(document.querySelectorAll('.nav-item')).find(item => 
         item.getAttribute('onclick').includes(`'${pageId}'`)
       );
       if (currentNavItem) currentNavItem.classList.add('active');
 
-      if (pageId === 'news') {
-          loadNewsData();
-      }
+      if (pageId === 'news') loadNewsData();
     }
 
     function toggleQRIS() {
       const modal = document.getElementById('qris-modal');
       modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
     }
+    
+    window.addEventListener('click', () => {
+      if(music.paused) {
+        music.volume = 0.25;
+        music.play().then(() => {
+          musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
+          popup.classList.remove('paused');
+        }).catch(()=>{});
+      }
+    }, { once: true });
   </script>
 </body>
 </html>
