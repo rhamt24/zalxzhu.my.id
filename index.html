@@ -18,12 +18,11 @@
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     
-    /* Mengunci halaman agar tidak bisa di-scroll secara keseluruhan */
     body, html {
       margin: 0; padding: 0;
       font-family: 'Poppins', sans-serif;
       color: #fff; background-color: #000;
-      overflow: hidden; 
+      overflow: hidden; /* Mengunci halaman utama agar tidak bisa di-scroll */
       height: 100%;
       width: 100%;
     }
@@ -40,10 +39,10 @@
 
     .container {
       max-width: 480px; margin: auto;
-      padding: 40px 20px 0;
+      padding: 30px 20px 0;
       display: none;
       height: 100vh;
-      overflow: hidden; /* Kontainer utama tetap diam */
+      overflow: hidden;
     }
     .container.active { display: flex; flex-direction: column; animation: slideUp 0.6s ease; }
 
@@ -51,7 +50,7 @@
 
     /* Navigasi Bawah */
     .bottom-nav {
-      position: fixed; bottom: 25px; left: 50%;
+      position: fixed; bottom: 20px; left: 50%;
       transform: translateX(-50%);
       width: 90%; max-width: 400px;
       background: rgba(15, 15, 15, 0.85);
@@ -69,9 +68,9 @@
     .nav-item span { font-size: 10px; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
 
     /* Profile & Cards */
-    .profile-header { text-align: center; margin-bottom: 25px; }
+    .profile-header { text-align: center; margin-bottom: 20px; }
     .profile-pic {
-      width: 100px; height: 100px; border-radius: 50%;
+      width: 90px; height: 90px; border-radius: 50%;
       border: 3px solid var(--pink-sakura); margin-bottom: 10px;
       box-shadow: 0 0 15px var(--pink-glow);
     }
@@ -81,7 +80,7 @@
     .card {
       background: var(--glass); backdrop-filter: blur(15px);
       border: 1px solid var(--glass-border);
-      border-radius: 20px; padding: 18px; margin-bottom: 15px;
+      border-radius: 20px; padding: 18px; margin-bottom: 12px;
     }
 
     .link-item { text-decoration: none; color: white; display: flex; align-items: center; justify-content: space-between; }
@@ -100,16 +99,25 @@
       border-radius: 12px; color: #111; font-weight: bold; cursor: pointer;
     }
 
-    /* Giscus Frame Fix: Bagian ini yang bisa di-scroll */
+    /* Giscus Frame Fix: Area scroll mandiri */
     .giscus-frame {
       background: rgba(255, 255, 255, 0.03);
       border-radius: 20px;
-      padding: 10px;
-      flex-grow: 1; /* Mengambil sisa ruang layar */
-      overflow-y: auto; /* Hanya bagian ini yang bisa di-scroll */
+      padding: 15px 15px 100px; /* Padding bawah di dalam frame ditingkatkan */
+      flex-grow: 1; 
+      overflow-y: auto;
       -webkit-overflow-scrolling: touch;
-      margin-bottom: 110px; /* Jarak aman agar tidak tertutup navigasi */
+      margin-bottom: 130px; /* Jarak aman agar bingkai tidak mentok nav */
       border: 1px solid var(--glass-border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Spacer transparan di dalam Giscus Frame agar tombol hijau bisa di-scroll ke atas */
+    .inner-spacer {
+      min-height: 120px;
+      width: 100%;
+      display: block;
     }
 
     #qris-modal {
@@ -129,7 +137,7 @@
   </video>
   <div class="overlay"></div>
 
-  <div id="home" class="container active" style="overflow-y: auto; padding-bottom: 100px;">
+  <div id="home" class="container active" style="overflow-y: auto; padding-bottom: 120px;">
     <div class="profile-header">
       <img src="https://files.catbox.moe/cbivjy.jpg" class="profile-pic" alt="ZalxZhu">
       <h1>ZalxZhu</h1>
@@ -175,6 +183,7 @@
               crossorigin="anonymous"
               async>
       </script>
+      <div class="inner-spacer"></div>
     </div>
   </div>
 
