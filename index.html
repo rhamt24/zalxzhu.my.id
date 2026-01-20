@@ -21,7 +21,7 @@
       margin: 0; padding: 0;
       font-family: 'Poppins', sans-serif;
       color: #fff; background-color: #000;
-      overflow-x: hidden; min-height: 100vh;
+      min-height: 100vh;
     }
 
     .background-video {
@@ -36,15 +36,15 @@
 
     .container {
       max-width: 480px; margin: auto;
-      padding: 50px 20px 100px;
+      padding: 50px 20px 150px;
       display: none;
       min-height: 100vh;
     }
     .container.active { display: block; animation: slideUp 0.6s ease; }
-    
-    /* Ruang ekstra khusus untuk halaman feedback agar tidak terpotong nav */
+
+    /* Fix khusus halaman feedback agar bisa scroll sangat jauh ke bawah */
     #feedback.active {
-      padding-bottom: 350px !important; 
+      padding-bottom: 400px !important;
     }
 
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -53,12 +53,12 @@
       position: fixed; bottom: 25px; left: 50%;
       transform: translateX(-50%);
       width: 90%; max-width: 400px;
-      background: rgba(15, 15, 15, 0.75);
-      backdrop-filter: blur(25px);
+      background: rgba(15, 15, 15, 0.8);
+      backdrop-filter: blur(20px);
       border: 1px solid var(--glass-border);
       border-radius: 30px;
       display: flex; justify-content: space-around;
-      padding: 12px; z-index: 1000;
+      padding: 12px; z-index: 2000;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
     .nav-item {
@@ -100,26 +100,28 @@
 
     #qris-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.92); z-index: 3000; align-items: center; justify-content: center;
       flex-direction: column; animation: fadeIn 0.3s ease;
     }
     .qris-box { background: white; padding: 15px; border-radius: 25px; text-align: center; width: 300px; box-shadow: 0 0 30px var(--pink-glow); }
     .qris-box img { width: 100%; border-radius: 15px; display: block; }
     .close-qris { margin-top: 25px; color: #111; background: var(--pink-sakura); padding: 10px 30px; border-radius: 15px; cursor: pointer; font-weight: 600; }
 
+    /* Giscus Container Fix: Membuatnya mengikuti panjang atau bisa scroll sendiri */
     .giscus-frame {
       background: rgba(255, 255, 255, 0.03);
       border-radius: 20px;
       padding: 15px;
-      margin-bottom: 20px;
-      overflow: visible;
+      margin-bottom: 30px;
+      /* Mengikuti panjang komentar, tapi jika di HP layar kecil bisa scroll sendiri */
+      min-height: 500px;
+      height: auto;
+      overflow-x: hidden;
     }
     
-    /* Memberikan ruang kosong transparan di paling bawah agar nav tidak menutupi tombol */
     .bottom-spacer {
-      height: 150px;
+      height: 200px;
       width: 100%;
-      display: block;
     }
     
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -241,3 +243,4 @@
   </script>
 </body>
 </html>
+
