@@ -10,7 +10,7 @@
   <style>
     :root {
       --pink-sakura: #ffb7c5;
-      --pink-glow: rgba(255, 183, 197, 0.4);
+      --pink-glow: rgba(255, 183, 197, 0.5);
       --wa-green: #25D366;
       --glass: rgba(255, 255, 255, 0.08);
       --glass-border: rgba(255, 255, 255, 0.15);
@@ -38,8 +38,9 @@
     /* Container SPA */
     .container {
       max-width: 480px; margin: auto;
-      padding: 50px 20px 120px;
+      padding: 50px 20px 160px; /* Ditambah agar tidak mentok navigasi */
       display: none;
+      min-height: 100vh;
     }
     .container.active { display: block; animation: slideUp 0.6s ease; }
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -72,14 +73,17 @@
       box-shadow: 0 0 20px var(--pink-glow);
     }
     h1 { font-size: 24px; margin: 0; letter-spacing: 1px; }
-    .status { font-size: 13px; color: #aaa; margin-top: 5px; }
+    .username-link { 
+      color: #bbb; text-decoration: none; font-size: 14px; 
+      transition: 0.3s; display: inline-block; margin-top: 5px;
+    }
+    .username-link:hover { color: var(--pink-sakura); }
 
     /* Card Design */
     .card {
       background: var(--glass); backdrop-filter: blur(15px);
       border: 1px solid var(--glass-border);
       border-radius: 20px; padding: 20px; margin-bottom: 15px;
-      transition: 0.3s;
     }
 
     /* Links */
@@ -89,7 +93,7 @@
     .pink-color { color: var(--pink-sakura) !important; }
 
     /* Bot Section */
-    .bot-thumb { width: 100%; height: 180px; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
+    .bot-thumb { width: 100%; height: 190px; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
     .retired-label {
       background: rgba(255, 71, 87, 0.2); color: #ff4757; border: 1px solid #ff4757;
       padding: 3px 10px; border-radius: 8px; font-size: 10px; font-weight: bold; margin-bottom: 8px; display: inline-block;
@@ -103,16 +107,31 @@
     /* QRIS Modal */
     #qris-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.92); z-index: 1000; align-items: center; justify-content: center;
       flex-direction: column; animation: fadeIn 0.3s ease;
     }
-    .qris-box { background: white; padding: 15px; border-radius: 20px; text-align: center; width: 280px; }
-    .qris-box img { width: 100%; border-radius: 10px; }
-    .close-qris { margin-top: 20px; color: var(--pink-sakura); border: 1px solid var(--pink-sakura); padding: 8px 25px; border-radius: 10px; cursor: pointer; }
+    .qris-box { 
+      background: white; padding: 15px; border-radius: 25px; 
+      text-align: center; width: 300px; 
+      box-shadow: 0 0 30px var(--pink-glow);
+    }
+    .qris-box img { width: 100%; border-radius: 15px; display: block; }
+    .close-qris { 
+      margin-top: 25px; color: #111; background: var(--pink-sakura); 
+      padding: 10px 30px; border-radius: 15px; 
+      cursor: pointer; font-weight: 600; transition: 0.3s;
+    }
 
-    /* Comments Page */
-    .comment-title { display: flex; align-items: center; gap: 10px; color: var(--pink-sakura); margin-bottom: 15px; }
-    .giscus-frame { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 10px; }
+    /* Comments Page Fixes */
+    .giscus-frame { 
+      background: rgba(255, 255, 255, 0.03); 
+      border-radius: 20px; 
+      padding: 15px;
+      min-height: 450px; /* Memberikan ruang minimal agar tidak terpotong */
+      overflow: visible; 
+    }
+    
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   </style>
 </head>
 <body>
@@ -126,7 +145,8 @@
     <div class="profile-header">
       <img src="https://files.catbox.moe/cbivjy.jpg" class="profile-pic" alt="ZalxZhu">
       <h1>ZalxZhu</h1>
-      <p class="status">Zhu Project • Haruka Development</p>
+      <a href="https://www.facebook.com/share/1Zyhm8Fxaf/" target="_blank" class="username-link">@zals_cihuy</a>
+      <p class="status" style="margin-top: 10px;">Zhu Project • Haruka Development</p>
     </div>
 
     <div class="card">
@@ -137,7 +157,7 @@
     </div>
 
     <div class="card">
-      <a href="https://whatsapp.com/channel/0029VacWGv123n3gvXMvrz3j" class="link-item">
+      <a href="https://whatsapp.com/channel/0029VaYuIQT2v1IjZmqTNG3x" class="link-item">
         <span class="wa-color"><i class="fab fa-whatsapp"></i> WhatsApp Channel</span>
         <i class="fas fa-external-link-alt" style="font-size: 12px; color: var(--wa-green);"></i>
       </a>
@@ -155,7 +175,7 @@
     <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 25px;">Bot Projects</h2>
     
     <div class="card">
-      <img src="https://files.catbox.moe/6vsc6n.jpg" class="bot-thumb" alt="Haruka">
+      <img src="https://files.catbox.moe/xbasea.jpg" class="bot-thumb" alt="Haruka">
       <h3 style="margin: 5px 0;">Haruka Bot</h3>
       <p style="font-size: 13px; color: #ccc; line-height: 1.6;">Generasi terbaru setelah Zhu desu. Bot WhatsApp multifungsi dengan fitur AI cerdas dan manajemen grup otomatis.</p>
       <button class="btn-main" onclick="window.open('https://wa.me/628xxx', '_blank')">Hubungi Haruka</button>
@@ -163,20 +183,15 @@
 
     <div class="card" style="opacity: 0.7;">
       <span class="retired-label">RETIRED / PENSIUN</span>
-      <img src="https://files.catbox.moe/cbivjy.jpg" class="bot-thumb" style="filter: grayscale(1);" alt="Zhu desu">
+      <img src="https://files.catbox.moe/fhk5mo.jpg" class="bot-thumb" style="filter: grayscale(1);" alt="Zhu desu">
       <h3>Zhu desu</h3>
       <p style="font-size: 13px; color: #bbb;">Bot pertama saya yang kini resmi beristirahat. Terima kasih atas semua kenangannya selama masa aktif.</p>
     </div>
   </div>
 
   <div id="feedback" class="container">
-    <div class="comment-title">
-      <i class="fas fa-pen-nib"></i>
-      <h2 style="margin: 0;">Papan Pesan</h2>
-    </div>
-    <div class="card giscus-frame">
-      <p style="font-size: 12px; color: #888; text-align: center; margin-bottom: 15px;">Login dengan GitHub untuk berkomentar secara publik.</p>
-      
+    <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;"><i class="fas fa-pen-nib"></i> Guestbook</h2>
+    <div class="giscus-frame">
       <script src="https://giscus.app/client.js"
               data-repo="rhamt24/zalxzhu.my.id"
               data-repo-id="R_kgDOPIa_rg"
@@ -198,10 +213,11 @@
 
   <div id="qris-modal">
     <div class="qris-box">
-      <h3 style="color: #333; margin-bottom: 10px;">ZalxZhu QRIS</h3>
-      <img src="https://files.catbox.moe/xxxx.jpg" alt="QRIS"> <p style="color: #666; font-size: 11px; margin-top: 10px;">Terima kasih orang baik!</p>
+      <h3 style="color: #333; margin-top: 0; margin-bottom: 10px;">Scan QRIS</h3>
+      <img src="https://files.catbox.moe/baxxkp.jpg" alt="QRIS">
+      <p style="color: #666; font-size: 11px; margin-top: 10px;">Setiap dukungan sangat berarti!</p>
     </div>
-    <div class="close-qris" onclick="toggleQRIS()">Tutup</div>
+    <div class="close-qris" onclick="toggleQRIS()">Kembali</div>
   </div>
 
   <nav class="bottom-nav">
