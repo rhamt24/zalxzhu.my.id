@@ -15,6 +15,8 @@
       --glass: rgba(20, 20, 20, 0.9);
       --glass-border: rgba(255, 255, 255, 0.15);
       --wa-green: #25D366;
+      --online: #2ecc71;
+      --offline: #e74c3c;
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -39,17 +41,17 @@
 
     /* --- MUSIC POPUP PLAYER --- */
     #music-popup {
-      position: fixed; top: 100px; right: 0; /* Default nempel kanan */
+      position: fixed; top: 100px; right: 20px;
       width: 280px; 
       background: var(--glass);
       backdrop-filter: blur(20px); border-radius: 16px;
       border: 1px solid var(--glass-border); z-index: 4000;
       padding: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: opacity 0.4s, transform 0.4s;
       display: flex; flex-direction: column; gap: 8px;
+      touch-action: none; /* Penting untuk drag di mobile */
     }
     
-    /* Tombol Hide (-) */
     .hide-btn {
       position: absolute; top: -10px; right: -8px;
       width: 24px; height: 24px; background: var(--pink-sakura);
@@ -59,80 +61,52 @@
       box-shadow: 0 0 10px var(--pink-glow);
     }
 
-    /* --- ISI PLAYER --- */
-    .player-info { display: flex; gap: 12px; align-items: center; }
-    
-    .song-cover { 
-      width: 55px; height: 55px; 
-      aspect-ratio: 1/1; 
-      border-radius: 10px; 
-      object-fit: cover; 
-      border: 1px solid var(--pink-sakura); 
-      flex-shrink: 0; 
-      transition: 0.4s;
-    }
-    
+    .player-info { display: flex; gap: 12px; align-items: center; pointer-events: none; }
+    .song-cover { width: 55px; height: 55px; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; border: 1px solid var(--pink-sakura); flex-shrink: 0; transition: 0.4s; }
     .song-details { overflow: hidden; flex: 1; display: flex; flex-direction: column; justify-content: center; }
     .song-title { font-size: 12px; font-weight: 600; color: var(--pink-sakura); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .song-author { font-size: 10px; color: #ccc; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-    .player-controls { display: flex; align-items: center; gap: 10px; }
+    .player-controls { display: flex; align-items: center; gap: 10px; z-index: 11; }
     .play-btn {
       background: var(--pink-sakura); border: none; width: 35px; height: 35px;
       border-radius: 50%; color: #111; cursor: pointer; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
       transition: 0.2s;
     }
-    .play-btn:active { transform: scale(0.9); }
     
-    .progress-box { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; }
+    .progress-box { flex-grow: 1; display: flex; flex-direction: column; gap: 4px; pointer-events: auto; }
     .progress-bar-container { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; position: relative; cursor: pointer; }
     #progress-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--pink-sakura); width: 0%; border-radius: 2px; }
     .time-info { display: flex; justify-content: space-between; font-size: 9px; color: #888; font-family: monospace; }
     
-    input[type=range] { -webkit-appearance: none; width: 60px; background: transparent; }
+    input[type=range] { -webkit-appearance: none; width: 60px; background: transparent; cursor: pointer; }
     input[type=range]::-webkit-slider-runnable-track { height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; }
     input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; background: var(--pink-sakura); border-radius: 50%; margin-top: -4px; box-shadow: 0 0 5px var(--pink-glow); }
 
-    /* --- STATE: MINIMIZED (BULAT PERFECT) --- */
     #music-popup.minimized {
-      width: 65px; height: 65px; 
-      padding: 0; border-radius: 50%; 
-      overflow: hidden; cursor: pointer;
-      border: 2px solid var(--pink-sakura);
-      background: rgba(0,0,0,0.8);
-      justify-content: center; align-items: center;
+      width: 65px; height: 65px; padding: 0; border-radius: 50%; 
+      overflow: hidden; cursor: grab; border: 2px solid var(--pink-sakura);
+      background: rgba(0,0,0,0.8); justify-content: center; align-items: center;
     }
-
-    #music-popup.minimized .hide-btn,
-    #music-popup.minimized .song-details,
-    #music-popup.minimized .player-controls { display: none !important; }
-    
-    #music-popup.minimized .player-info { width: 100%; height: 100%; margin: 0; padding: 0; }
-    #music-popup.minimized .song-cover {
-      width: 100%; height: 100%;
-      border-radius: 50% !important; 
-      border: none; margin: 0;
-      animation: spinVinyl 6s linear infinite;
-    }
-    
-    #music-popup.minimized.paused .song-cover { animation-play-state: paused; }
+    #music-popup.minimized .hide-btn, #music-popup.minimized .song-details, #music-popup.minimized .player-controls { display: none !important; }
+    #music-popup.minimized .song-cover { width: 100%; height: 100%; border-radius: 50% !important; border: none; animation: spinVinyl 6s linear infinite; }
     @keyframes spinVinyl { 100% { transform: rotate(360deg); } }
+    
+    /* Hapus !important agar bisa digeser via JS */
+    #music-popup.minimized.dock-left { left: 10px; right: auto; }
+    #music-popup.minimized.dock-right { right: 10px; left: auto; }
 
-    /* Docking Positions */
-    #music-popup.minimized.dock-left { left: 10px !important; right: auto !important; }
-    #music-popup.minimized.dock-right { right: 10px !important; left: auto !important; }
-
+    /* --- BOT STATUS STYLES --- */
+    .status-indicator { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; margin-top: 10px; }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-online { background: var(--online); box-shadow: 0 0 10px var(--online); animation: pulse 2s infinite; }
+    .dot-offline { background: var(--offline); box-shadow: 0 0 10px var(--offline); }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
     /* --- MAIN LAYOUT --- */
-    .container {
-      max-width: 480px; margin: auto;
-      padding: 30px 20px 0;
-      display: none; height: 100vh;
-      flex-direction: column;
-    }
+    .container { max-width: 480px; margin: auto; padding: 30px 20px 0; display: none; height: 100vh; flex-direction: column; }
     .container.active { display: flex; animation: slideUp 0.6s ease; }
-
     @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
     .bottom-nav {
@@ -144,23 +118,15 @@
       border: 1px solid var(--glass-border);
       border-radius: 30px;
       display: flex; justify-content: space-around;
-      padding: 12px 5px; z-index: 2000;
+      padding: 12px 2px; z-index: 2000;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
-    .nav-item {
-      color: #666; font-size: 18px; cursor: pointer; transition: 0.3s;
-      display: flex; flex-direction: column; align-items: center;
-      flex: 1;
-    }
+    .nav-item { color: #666; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; flex: 1; }
     .nav-item.active { color: var(--pink-sakura); transform: translateY(-5px); text-shadow: 0 0 8px var(--pink-glow); }
-    .nav-item span { font-size: 8px; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
+    .nav-item span { font-size: 7px; margin-top: 4px; font-weight: 600; text-transform: uppercase; }
 
     .profile-header { text-align: center; margin-bottom: 20px; flex-shrink: 0; }
-    .profile-pic {
-      width: 95px; height: 95px; border-radius: 50%;
-      border: 3px solid var(--pink-sakura); margin-bottom: 10px;
-      box-shadow: 0 0 15px var(--pink-glow);
-    }
+    .profile-pic { width: 95px; height: 95px; border-radius: 50%; border: 3px solid var(--pink-sakura); margin-bottom: 10px; box-shadow: 0 0 15px var(--pink-glow); }
     h1 { font-size: 22px; margin: 0; letter-spacing: 1px; }
     .username-link { color: #bbb; text-decoration: none; font-size: 13px; display: block; margin-top: 2px; }
 
@@ -172,6 +138,7 @@
 
     .bot-thumb, .news-media, .placeholder-thumb { width: 100%; border-radius: 12px; object-fit: cover; margin-bottom: 12px; }
     .bot-thumb, .placeholder-thumb { height: 180px; }
+    .news-date { font-size: 10px; color: #666; display: block; margin-top: 8px; }
     .retired-label { background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid #ff4757; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-bottom: 8px; display: inline-block; }
     .btn-main { width: 100%; background: var(--pink-sakura); border: none; padding: 12px; border-radius: 12px; color: #111; font-weight: bold; cursor: pointer; }
     .giscus-container { flex-grow: 1; overflow-y: auto; padding-bottom: 180px; }
@@ -179,8 +146,6 @@
     #qris-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 5000; align-items: center; justify-content: center; flex-direction: column; }
     .qris-box { background: white; padding: 15px; border-radius: 25px; text-align: center; width: 300px; }
     .qris-box img { width: 100%; border-radius: 15px; }
-    .news-date { font-size: 10px; color: #666; display: block; margin-top: 8px; }
-    .loading-news { text-align: center; color: var(--pink-sakura); padding: 20px; }
   </style>
 </head>
 <body onclick="startAudioOnce()">
@@ -191,10 +156,7 @@
   <div class="overlay"></div>
 
   <div id="music-popup" class="minimized dock-right">
-    <div class="hide-btn" onclick="toggleMinimize(event)">
-      <i class="fas fa-minus"></i>
-    </div>
-
+    <div class="hide-btn" onclick="toggleMinimize(event)"><i class="fas fa-minus"></i></div>
     <div class="player-info">
       <img src="https://i.scdn.co/image/ab67616d0000b273df8d4f8cd143232b98c92552" class="song-cover" id="popup-cover" alt="Cover">
       <div class="song-details">
@@ -202,19 +164,11 @@
         <p class="song-author">エレン・ジョー (CV:若山詩音)</p>
       </div>
     </div>
-    
     <div class="player-controls">
-      <button class="play-btn" id="music-btn" onclick="toggleMusic(event)">
-        <i class="fas fa-play"></i>
-      </button>
+      <button class="play-btn" id="music-btn" onclick="toggleMusic(event)"><i class="fas fa-play"></i></button>
       <div class="progress-box">
-        <div class="progress-bar-container" onclick="seekAudio(event)">
-          <div id="progress-fill"></div>
-        </div>
-        <div class="time-info">
-          <span id="time-current">0:00</span>
-          <span id="time-duration">0:00</span>
-        </div>
+        <div class="progress-bar-container" onclick="seekAudio(event)"><div id="progress-fill"></div></div>
+        <div class="time-info"><span id="time-current">0:00</span><span id="time-duration">0:00</span></div>
       </div>
       <input type="range" min="0" max="1" step="0.01" value="0.25" oninput="changeVolume(this.value)" onclick="event.stopPropagation()">
     </div>
@@ -227,13 +181,8 @@
       <p style="color:var(--pink-sakura); font-size: 13px; margin: 5px 0 0; font-weight: 600;">Project Zhu & Haruka Development</p>
       <a href="https://www.facebook.com/share/1Zyhm8Fxaf/" target="_blank" class="username-link">@zals_cihuy</a>
     </div>
-
     <div class="scroll-area">
-      <div class="card">
-        <p style="font-size: 13px; color: #ccc; margin: 0; line-height: 1.6; text-align: center;">
-          Welcome to my development hub. Menjelajahi dunia automasi WhatsApp dengan sentuhan AI untuk masa depan yang lebih efisien.
-        </p>
-      </div>
+      <div class="card"><p style="font-size: 13px; color: #ccc; margin: 0; line-height: 1.6; text-align: center;">Welcome to my development hub. Menjelajahi dunia automasi WhatsApp dengan sentuhan AI untuk masa depan yang lebih efisien.</p></div>
       <div class="card"><a href="https://github.com/rhamt24" class="link-item"><span><i class="fab fa-github pink-color"></i> GitHub Profile</span><i class="fas fa-chevron-right" style="opacity: 0.5; font-size: 12px;"></i></a></div>
       <div class="card"><a href="https://whatsapp.com/channel/0029VaYuIQT2v1IjZmqTNG3x" class="link-item"><span class="wa-color"><i class="fab fa-whatsapp"></i> WhatsApp Channel</span><i class="fas fa-external-link-alt" style="font-size: 12px;"></i></a></div>
       <div class="card" onclick="toggleQRIS()" style="cursor: pointer; border: 1px dashed var(--pink-sakura);"><div class="link-item"><span><i class="fas fa-qrcode pink-color"></i> Support via QRIS</span><i class="fas fa-heart pink-color" style="font-size: 12px;"></i></div></div>
@@ -242,9 +191,7 @@
 
   <div id="news" class="container">
     <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;"><i class="fas fa-newspaper"></i> News Update</h2>
-    <div class="scroll-area" id="news-container">
-        <div class="loading-news">Memuat berita terbaru...</div>
-    </div>
+    <div class="scroll-area" id="news-container"><div class="loading-news">Memuat berita terbaru...</div></div>
   </div>
 
   <div id="bot" class="container">
@@ -262,6 +209,30 @@
         <h3>Zhu desu</h3>
         <p style="font-size: 12px; color: #bbb; line-height: 1.6;">Zhu telah resmi <b>pensiun</b>. Hadir di sini sebagai <b>pengingat perjuangan masa lalu</b> yang telah membentuk pondasi kokoh untuk pengembangan project selanjutnya.</p>
       </div>
+    </div>
+  </div>
+
+  <div id="status" class="container">
+    <h2 style="text-align: center; color: var(--pink-sakura); margin-bottom: 20px;"><i class="fas fa-signal"></i> System Status</h2>
+    <div class="scroll-area">
+        <div class="card">
+            <h3>Haruka Bot Beta</h3>
+            <p style="font-size: 11px; color: #aaa;">Status sistem haruka beta.</p>
+            <div class="status-indicator">
+                <div id="dot-beta" class="dot dot-offline"></div>
+                <span id="text-beta">OFFLINE</span>
+            </div>
+            <p id="time-beta" style="font-size: 9px; color: #666; margin-top: 5px;">Last Update: -</p>
+        </div>
+        <div class="card">
+            <h3>Haruka Stable Version</h3>
+            <p style="font-size: 11px; color: #aaa;">Status sistem haruka versi publik yang stabil.</p>
+            <div class="status-indicator">
+                <div id="dot-stable" class="dot dot-offline"></div>
+                <span id="text-stable">OFFLINE</span>
+            </div>
+            <p id="time-stable" style="font-size: 9px; color: #666; margin-top: 5px;">Last Update: -</p>
+        </div>
     </div>
   </div>
 
@@ -309,6 +280,7 @@
     <div class="nav-item active" onclick="showPage('home')"><i class="fas fa-home"></i><span>Home</span></div>
     <div class="nav-item" onclick="showPage('news')"><i class="fas fa-newspaper"></i><span>News</span></div>
     <div class="nav-item" onclick="showPage('bot')"><i class="fas fa-robot"></i><span>Bot</span></div>
+    <div class="nav-item" onclick="showPage('status')"><i class="fas fa-signal"></i><span>Status</span></div>
     <div class="nav-item" onclick="showPage('other')"><i class="fas fa-cubes"></i><span>Other</span></div>
     <div class="nav-item" onclick="showPage('feedback')"><i class="fas fa-comments"></i><span>Review</span></div>
   </nav>
@@ -316,140 +288,183 @@
   <audio id="bg-music" src="https://cdn.jsdelivr.net/gh/rhamt24/zalxzhu.github.io/mp3/ellen.mp3" loop></audio>
 
   <script>
-    // --- KONFIGURASI SUPABASE ---
+    // --- KONFIGURASI ---
+    const GIST_BETA_ID = '1ef7200e37a98c6e729d056f000ed8a3';
+    const GIST_STABLE_ID = 'GIST_ID_STABLE_MU_DI_SINI'; 
     const _supabaseUrl = 'https://omquwluqxmixiqdmwkir.supabase.co';
     const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tcXV3bHVxeG1peGlxZG13a2lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4OTE3MzUsImV4cCI6MjA4NDQ2NzczNX0.nVQhgPBzhWgpT1aELHx95MDv7qQcErtDs3C-5pB9qRQ';
     const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 
-    // --- LOGIKA MUSIC PLAYER ---
+    // --- STATUS CHECKER ---
+    async function checkBotStatus(gistId, dotId, textId, timeId) {
+        const dot = document.getElementById(dotId);
+        const text = document.getElementById(textId);
+        const time = document.getElementById(timeId);
+        if(!dot || !text || !time) return;
+        try {
+            const res = await fetch(`https://api.github.com/gists/${gistId}`, { cache: 'no-store' });
+            const data = await res.json();
+            const content = JSON.parse(data.files['status.json'].content);
+            const lastUpdate = content.last_update;
+            const now = Date.now();
+            const isOnline = (now - lastUpdate) < 120000;
+            if (isOnline) {
+                dot.className = 'dot dot-online';
+                text.innerText = 'ONLINE';
+                text.style.color = 'var(--online)';
+            } else {
+                dot.className = 'dot dot-offline';
+                text.innerText = 'OFFLINE';
+                text.style.color = 'var(--offline)';
+            }
+            time.innerText = `Last Update: ${new Date(lastUpdate).toLocaleString('id-ID')}`;
+        } catch (e) { console.error(e); }
+    }
+    
+    function runStatusCheck() { 
+        checkBotStatus(GIST_BETA_ID, 'dot-beta', 'text-beta', 'time-beta'); 
+        checkBotStatus(GIST_STABLE_ID, 'dot-stable', 'text-stable', 'time-stable'); 
+    }
+    
+    setInterval(runStatusCheck, 60000);
+    runStatusCheck();
+
+    // --- MUSIC PLAYER LOGIC ---
     const music = document.getElementById('bg-music');
     const musicBtn = document.getElementById('music-btn');
     const popup = document.getElementById('music-popup');
     const progressFill = document.getElementById('progress-fill');
     
-    function formatTime(s) {
-      if(isNaN(s)) return "0:00";
-      const m = Math.floor(s/60);
-      const sec = Math.floor(s%60);
-      return `${m}:${sec<10?'0':''}${sec}`;
-    }
-
+    function formatTime(s) { if(isNaN(s)) return "0:00"; const m = Math.floor(s/60); const sec = Math.floor(s%60); return `${m}:${sec<10?'0':''}${sec}`; }
+    
     music.addEventListener('timeupdate', () => {
       if(!music.duration) return;
-      const pct = (music.currentTime / music.duration) * 100;
-      progressFill.style.width = `${pct}%`;
+      progressFill.style.width = `${(music.currentTime / music.duration) * 100}%`;
       document.getElementById('time-current').innerText = formatTime(music.currentTime);
       document.getElementById('time-duration').innerText = formatTime(music.duration);
     });
 
     function toggleMusic(e) {
       if(e) e.stopPropagation();
-      if(music.paused) {
-        music.play();
-        musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        popup.classList.remove('paused');
-      } else {
-        music.pause();
-        musicBtn.innerHTML = '<i class="fas fa-play"></i>';
-        popup.classList.add('paused');
-      }
+      if(music.paused) { music.play(); musicBtn.innerHTML = '<i class="fas fa-pause"></i>'; popup.classList.remove('paused'); }
+      else { music.pause(); musicBtn.innerHTML = '<i class="fas fa-play"></i>'; popup.classList.add('paused'); }
     }
 
     function changeVolume(val) { music.volume = val; }
-    
-    function seekAudio(e) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const pct = (e.clientX - rect.left) / rect.width;
-      music.currentTime = pct * music.duration;
+    function seekAudio(e) { 
+        const rect = e.currentTarget.getBoundingClientRect(); 
+        music.currentTime = ((e.clientX - rect.left) / rect.width) * music.duration; 
     }
 
-    function startAudioOnce() {
-      if(music.paused) {
-        music.volume = 0.25;
-        music.play().then(() => {
-          musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
-          popup.classList.remove('paused');
-        }).catch(()=>{});
-      }
+    function startAudioOnce() { 
+        if(music.paused) { 
+            music.volume = 0.25; 
+            music.play().then(() => { 
+                musicBtn.innerHTML = '<i class="fas fa-pause"></i>'; 
+                popup.classList.remove('paused');
+            }).catch(()=>{}); 
+        } 
     }
 
-    // --- LOGIKA MINIMIZE / HIDE (DEFAULT TRUE) ---
-    // Ubah ke true supaya defaultnya hide
     let isMinimized = true;
-
     function toggleMinimize(e) {
       if(e) e.stopPropagation();
       isMinimized = !isMinimized;
-      
       if(isMinimized) {
-        const rect = popup.getBoundingClientRect();
-        const screenMid = window.innerWidth / 2;
         popup.classList.add('minimized');
-        
-        // Cek nempel kiri atau kanan
-        if(rect.left + rect.width/2 < screenMid) {
-          popup.classList.add('dock-left');
-          popup.classList.remove('dock-right');
-        } else {
-          popup.classList.add('dock-right');
-          popup.classList.remove('dock-left');
-        }
+        // Reset posisi ke dock jika di-minimize
+        popup.style.left = "";
+        popup.style.top = "";
       } else {
-        popup.classList.remove('minimized');
-        popup.classList.remove('dock-left');
-        popup.classList.remove('dock-right');
+        popup.classList.remove('minimized', 'dock-left', 'dock-right');
       }
     }
-    
-    // Klik saat minimized untuk membuka
+
+    // --- DRAGGABLE LOGIC (FIXED) ---
+    let isDragging = false;
+    let offset = [0, 0];
+    let startPos = [0, 0];
+
+    function onStart(e) {
+        // Abaikan drag jika klik tombol atau input volume
+        if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.hide-btn')) return;
+        
+        isDragging = true;
+        popup.style.transition = "none";
+        
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        
+        const rect = popup.getBoundingClientRect();
+        offset = [clientX - rect.left, clientY - rect.top];
+        startPos = [clientX, clientY];
+        
+        if (e.type === 'touchstart') {
+            // Kita tidak preventDefault di sini agar klik tetap jalan jika tidak digeser
+        } else {
+            e.preventDefault();
+        }
+    }
+
+    function onMove(e) {
+        if (!isDragging) return;
+        
+        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        
+        // Cek jika benar-benar bergerak (mencegah klik dianggap drag)
+        if (Math.abs(clientX - startPos[0]) > 5 || Math.abs(clientY - startPos[1]) > 5) {
+            e.preventDefault(); 
+            popup.style.left = (clientX - offset[0]) + 'px';
+            popup.style.top = (clientY - offset[1]) + 'px';
+            popup.style.right = 'auto';
+        }
+    }
+
+    function onEnd(e) {
+        if (!isDragging) return;
+        isDragging = false;
+        popup.style.transition = "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)";
+        
+        // Jika sedang minimized, tempelkan ke pinggir terdekat (Docking)
+        if (isMinimized) {
+            const rect = popup.getBoundingClientRect();
+            if (rect.left + rect.width / 2 < window.innerWidth / 2) {
+                popup.style.left = "10px";
+                popup.style.right = "auto";
+            } else {
+                popup.style.left = "auto";
+                popup.style.right = "10px";
+            }
+        }
+    }
+
+    popup.addEventListener('mousedown', onStart);
+    popup.addEventListener('touchstart', onStart, { passive: true });
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('mouseup', onEnd);
+    window.addEventListener('touchend', onEnd);
+
+    // Klik vinyl untuk expand
     popup.addEventListener('click', (e) => {
-      if(isMinimized && !e.target.closest('.hide-btn')) {
-        toggleMinimize(e);
-      }
+        if (isMinimized && !isDragging && !e.target.closest('.hide-btn')) {
+            const clientX = e.clientX;
+            const clientY = e.clientY;
+            // Hanya expand jika tidak sedang di-drag
+            if (Math.abs(clientX - startPos[0]) < 10) {
+                toggleMinimize(e);
+            }
+        }
     });
 
-    // --- DRAGGABLE LOGIC ---
-    let isDragging = false, offset = [0,0];
-
-    function startDrag(e) {
-      if(isMinimized || e.target.closest('button') || e.target.closest('input')) return;
-      isDragging = true;
-      const cX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-      const cY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-      offset = [popup.offsetLeft - cX, popup.offsetTop - cY];
-      popup.style.transition = 'none'; 
-    }
-
-    function doDrag(e) {
-      if(!isDragging) return;
-      e.preventDefault();
-      const cX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-      const cY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-      popup.style.left = (cX + offset[0]) + 'px';
-      popup.style.top = (cY + offset[1]) + 'px';
-      popup.style.right = 'auto'; 
-    }
-
-    function endDrag() {
-      isDragging = false;
-      popup.style.transition = 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-    }
-
-    popup.addEventListener('mousedown', startDrag);
-    popup.addEventListener('touchstart', startDrag, {passive: false});
-    document.addEventListener('mousemove', doDrag);
-    document.addEventListener('touchmove', doDrag, {passive: false});
-    document.addEventListener('mouseup', endDrag);
-    document.addEventListener('touchend', endDrag);
-
-    // --- SUPABASE NEWS ---
+    // --- NEWS FETCHER ---
     async function loadNewsData() {
         const container = document.getElementById('news-container');
+        if(!container) return;
         const { data, error } = await _supabase.from('news').select('*').order('created_at', { ascending: false });
-
         if (error) { container.innerHTML = `<div class="card">Error: ${error.message}</div>`; return; }
         if (!data.length) { container.innerHTML = `<div class="card" style="text-align:center;">Belum ada berita.</div>`; return; }
-
         container.innerHTML = ''; 
         data.forEach(item => {
             const card = document.createElement('div'); card.className = 'card';
@@ -469,34 +484,17 @@
         });
     }
 
-    // --- NAVIGASI ---
+    // --- NAVIGATION ---
     function showPage(pageId) {
       document.querySelectorAll('.container').forEach(c => c.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      
-      document.getElementById(pageId).classList.add('active');
-      const currentNavItem = Array.from(document.querySelectorAll('.nav-item')).find(item => 
-        item.getAttribute('onclick').includes(`'${pageId}'`)
-      );
-      if (currentNavItem) currentNavItem.classList.add('active');
-
+      const target = document.getElementById(pageId);
+      if(target) target.classList.add('active');
+      const nav = Array.from(document.querySelectorAll('.nav-item')).find(i => i.getAttribute('onclick').includes(`'${pageId}'`));
+      if (nav) nav.classList.add('active');
       if (pageId === 'news') loadNewsData();
     }
-
-    function toggleQRIS() {
-      const modal = document.getElementById('qris-modal');
-      modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
-    }
-    
-    window.addEventListener('click', () => {
-      if(music.paused) {
-        music.volume = 0.25;
-        music.play().then(() => {
-          musicBtn.innerHTML = '<i class="fas fa-pause"></i>';
-          popup.classList.remove('paused');
-        }).catch(()=>{});
-      }
-    }, { once: true });
+    function toggleQRIS() { const modal = document.getElementById('qris-modal'); modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex'; }
   </script>
 </body>
 </html>
