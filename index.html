@@ -360,19 +360,34 @@
     const _supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tcXV3bHVxeG1peGlxZG13a2lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4OTE3MzUsImV4cCI6MjA4NDQ2NzczNX0.nVQhgPBzhWgpT1aELHx95MDv7qQcErtDs3C-5pB9qRQ';
     const _supabase = supabase.createClient(_supabaseUrl, _supabaseKey);
 
-    // --- STATUS CHECKER ---
+    // --- STATUS CHECKER (MODIFIED FOR VERCEL API PROXY) ---
     async function checkBotStatus(gistId, dotId, textId, timeId) {
         const dot = document.getElementById(dotId);
         const text = document.getElementById(textId);
         const time = document.getElementById(timeId);
         if(!dot || !text || !time) return;
         try {
-            const res = await fetch(`https://api.github.com/gists/${gistId}`, { cache: 'no-store' });
+            // SAYA UBAH BARIS INI: Mengarah ke API Vercel buatan kita, bukan Gist langsung
+            // Ini untuk menghindari Error 403 (Rate Limit) dan lebih aman
+            const res = await fetch(`/api/status?id=${gistId}`);
+            
+            if (!res.ok) throw new Error(`API Error: ${res.status}`);
+            
             const data = await res.json();
+            
+            // Cek data lebih teliti
+            if (!data || !data.files || !data.files['status.json']) {
+                console.warn(`File status.json tidak ditemukan.`);
+                return;
+            }
+
             const content = JSON.parse(data.files['status.json'].content);
             const lastUpdate = content.last_update;
             const now = Date.now();
+            
+            // Logic Online: Update < 2 Menit yang lalu
             const isOnline = (now - lastUpdate) < 120000;
+            
             if (isOnline) {
                 dot.className = 'dot dot-online';
                 text.innerText = 'ONLINE';
@@ -383,7 +398,9 @@
                 text.style.color = 'var(--offline)';
             }
             time.innerText = `Last Update: ${new Date(lastUpdate).toLocaleString('id-ID')}`;
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+             console.log(`Status Check Error (${textId}):`, e.message);
+        }
     }
     
     function runStatusCheck() { 
