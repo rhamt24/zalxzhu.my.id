@@ -67,7 +67,12 @@ $('#av').onkeydown=e=>{if(e.key==='Enter'||e.key===' ')$('#av').click()};
 $('#c1').onclick=()=>{const k=Object.keys(up||{});say(k.length?k.map(n=>`${n}: ${up[n]?'online':'offline'}`).join(' • '):'Belum ada data status.',6000)};
 $('#c2').onclick=()=>{if(au.paused){au.play().then(()=>{$('#c2').textContent='Jeda lagu';say('♪ '+D.ellen.song)}).catch(()=>{})}else{au.pause();$('#c2').textContent='Putar lagu'}};
 addEventListener('pointermove',e=>{const x=(e.clientX/innerWidth-.5)*14,y=(e.clientY/innerHeight-.5)*14;$('#hero').style.transform=`translate(${x}px,${y}px) rotate(${x/3}deg)`},{passive:true});
-const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){const id=en.target.id;document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.hash==='#'+id));if(D&&!said[id]&&id!=='home'){said[id]=1;say(D.ellen.pages[id])}}}),{threshold:.5});
-document.querySelectorAll('main>section').forEach(s=>io.observe(s));
+/* Menu aktif mengikuti posisi gulir: bagian terakhir yang bagian atasnya sudah lewat di bawah menu */
+const secs=[...document.querySelectorAll('main>section')],links=[...document.querySelectorAll('nav a')];let cur='';
+function spy(){let id=secs[0].id;for(const s of secs)if(s.getBoundingClientRect().top<=110)id=s.id;
+if(innerHeight+scrollY>=document.documentElement.scrollHeight-4)id=secs[secs.length-1].id;
+if(id===cur)return;cur=id;links.forEach(a=>a.classList.toggle('on',a.hash==='#'+id));
+if(D&&!said[id]&&id!=='home'){said[id]=1;say(D.ellen.pages[id])}}
+let tick;addEventListener('scroll',()=>{cancelAnimationFrame(tick);tick=requestAnimationFrame(spy)},{passive:true});addEventListener('load',spy);spy();
 $('#qb').onclick=()=>$('#qm').classList.add('o');$('#qm').onclick=()=>$('#qm').classList.remove('o');addEventListener('keydown',e=>e.key==='Escape'&&$('#qm').classList.remove('o'));
 </script></body></html>
